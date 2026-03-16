@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0e0e0e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BPU">
+<meta name="application-name" content="BPU">
+<title>BPU — Boulder Performance</title>
+<!-- Blob manifest removed: not needed for iOS -->
+<!-- SW removed: Blob SW not supported on iOS Safari -->
+<style>
+:root{
+  --bg:#0e0e0e;--bg2:#1c1c1c;--bg3:#252525;--bg4:#2f2f2f;
+  --ln:rgba(255,255,255,0.07);--ln2:rgba(255,255,255,0.13);
+  --txt:#eeebe5;--txt2:#888;--txt3:#787878;
+  --lim:#d4f54c;--lim2:#b8d83a;--lbg:rgba(212,245,76,0.08);--lbg2:rgba(212,245,76,0.04);
+  --amb:#f0a832;--abg:rgba(240,168,50,0.10);
+  --red:#f05050;--rbg:rgba(240,80,80,0.09);
+  --tel:#40c898;--tbg:rgba(64,200,152,0.09);
+  --blu:#58a8f0;--bbg:rgba(88,168,240,0.09);
+  --pur:#a060f0;--pbg:rgba(160,96,240,0.09);
+  --nav:62px;--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{height:100%;}
+body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--txt);height:100%;height:100dvh;overflow:hidden;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+#shell{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:520px;margin:0 auto;background:var(--bg);}
+
+/* TOP BAR */
+#topbar{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 2px;gap:10px;}
+.logo-wrap{display:flex;align-items:center;gap:9px;}
+.logo-svg{flex-shrink:0;}
+.greet-hi{font-size:10px;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;display:block;}
+.greet-name{font-size:18px;font-weight:700;line-height:1.15;display:block;}
+.prof-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--bg3);border:1px solid var(--ln2);border-radius:20px;font-size:12px;color:var(--txt2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .12s;}
+.prof-btn:active{background:var(--bg4);}
+.prof-dot{width:8px;height:8px;border-radius:50%;background:var(--lim);flex-shrink:0;}
+
+/* PAGES */
+.page{display:none;flex-direction:column;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:10px 14px 16px;gap:10px;min-height:0;}
+.page.active{display:flex;}
+.page::-webkit-scrollbar{display:none;}
+
+/* BOTTOM NAV */
+#nav{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);background:var(--bg2);border-top:1px solid var(--ln);height:calc(var(--nav) + var(--sab));padding-bottom:var(--sab);}
+.nb{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--txt3);font-size:9px;letter-spacing:.07em;text-transform:uppercase;transition:color .15s;padding:6px 0;position:relative;}
+.nb.active{color:var(--lim);}
+.nb::after{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--lim);border-radius:0 0 2px 2px;opacity:0;transition:opacity .15s;}
+.nb.active::after{opacity:1;}
+.nb svg{width:20px;height:20px;stroke-width:1.5;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;padding:14px;}
+.card-lime{border-color:rgba(212,245,76,0.18);}
+.ctitle{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.ctitle-link{font-size:10px;color:var(--blu);cursor:pointer;text-transform:none;letter-spacing:.04em;}
+
+/* SCORE RING */
+.score-wrap{display:flex;flex-direction:column;align-items:center;padding:12px 0 8px;}
+.ring-outer{position:relative;width:148px;height:148px;margin-bottom:8px;}
+.ring-outer svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.snum{font-size:58px;font-weight:700;line-height:1;color:var(--lim);transition:color .3s;letter-spacing:-.02em;}
+.snum.dim{color:var(--txt3);font-size:34px;font-weight:400;}
+.slbl{font-size:9px;color:var(--txt3);letter-spacing:.12em;margin-top:2px;text-transform:uppercase;}
+.szone{font-size:11px;letter-spacing:.04em;margin-top:4px;min-height:16px;transition:color .3s;}
+.fstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:10px;}
+.fcell{display:flex;flex-direction:column;align-items:center;background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:7px 3px;cursor:pointer;transition:background .12s;min-height:46px;justify-content:center;}
+.fcell:active{background:var(--bg4);}
+.fv{font-size:11px;font-weight:600;}
+.fk{font-size:8px;color:var(--txt3);margin-top:3px;letter-spacing:.04em;text-transform:uppercase;}
+.formula{font-size:10px;color:var(--txt3);background:var(--bg3);border-radius:10px;padding:9px 11px;line-height:1.9;margin-top:8px;border:1px solid var(--ln);overflow-x:auto;white-space:nowrap;font-family:'Courier New',monospace;}
+.formula strong{color:var(--lim);font-weight:600;}
+
+/* SESSION CARD — motivational message */
+.session-msg{margin-top:10px;padding:10px 12px;background:var(--lbg2);border-radius:10px;border-left:2px solid var(--lim);font-size:12px;color:var(--txt2);line-height:1.6;display:none;}
+.session-msg.show{display:block;}
+.session-msg strong{color:var(--lim);}
+
+/* DURATION */
+.dur-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.dur-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
+.dur-btn .di{font-size:18px;line-height:1;}
+.dur-btn .dl{font-size:12px;font-weight:600;color:var(--txt);}
+.dur-btn .ds{font-size:9px;color:var(--txt3);letter-spacing:.03em;}
+.dur-btn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);}
+.dur-btn.active .dl{color:var(--lim);}
+.dur-btn:active{transform:scale(0.96);}
+
+/* GRADE NUMPAD */
+.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.gbtn{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;border:1px solid var(--ln);background:var(--bg3);cursor:pointer;transition:all .12s;gap:2px;user-select:none;}
+.gbtn:active{transform:scale(0.93);}
+.gbtn.sel{border-color:rgba(212,245,76,0.5);background:var(--lbg);}
+.gbtn .gn{font-size:26px;font-weight:700;line-height:1;}
+.gbtn .gs{font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:.03em;}
+.gbtn.sel .gs{color:var(--lim);}
+.gbtn[data-g="1"] .gn{color:#98e0b8;}
+.gbtn[data-g="2"] .gn{color:#60c890;}
+.gbtn[data-g="3"] .gn{color:#38b070;}
+.gbtn[data-g="4"] .gn{color:#2898a0;}
+.gbtn[data-g="5"] .gn{color:#4888d8;}
+.gbtn[data-g="6"] .gn{color:#8060d8;}
+.gbtn[data-g="7"] .gn{color:#d84898;}
+.gbtn[data-g="8"] .gn{color:#f05050;}
+
+/* ATTEMPT + RESULT PICKER */
+.att-section{display:flex;flex-direction:column;gap:8px;}
+.att-sublabel{font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
+.att-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.res-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.abtn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:11px 4px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
+.abtn .am{font-size:12px;font-weight:600;color:var(--txt);font-family:'Courier New',monospace;}
+.abtn .as{font-size:9px;color:var(--txt3);letter-spacing:.03em;}
+.abtn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);}
+.abtn.active .am{color:var(--lim);}
+.abtn[data-v="1"].active{background:var(--abg);border-color:rgba(240,168,50,0.35);}
+.abtn[data-v="1"].active .am{color:var(--amb);}
+.abtn[data-r="fail"].active{background:var(--rbg);border-color:rgba(232,64,64,0.35);}
+.abtn[data-r="fail"] .am{color:var(--txt3);}
+.abtn[data-r="fail"].active .am{color:var(--red);}
+.abtn:active{transform:scale(0.96);}
+.add-btn{width:100%;padding:15px;border-radius:12px;background:var(--lim);color:#111;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px;}
+.add-btn:active{transform:scale(0.98);background:var(--lim2);}
+.add-btn:disabled{background:var(--bg4);color:var(--txt3);cursor:default;transform:none;}
+
+/* BOULDER LIST */
+.blist{display:flex;flex-direction:column;gap:6px;}
+.bitem{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--bg3);border:1px solid var(--ln);border-radius:11px;animation:slin .15s ease;}
+.bitem.fail-item{opacity:0.6;border-style:dashed;}
+@keyframes slin{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
+.bdot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.binfo{flex:1;}
+.bimain{font-size:13px;font-weight:600;}
+.bisub{font-size:11px;color:var(--txt2);margin-top:1px;font-family:'Courier New',monospace;}
+.bpts{font-size:11px;color:var(--txt3);font-family:'Courier New',monospace;white-space:nowrap;}
+.brm{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--txt3);font-size:18px;border-radius:8px;transition:all .12s;}
+.brm:active{background:var(--rbg);color:var(--red);}
+.tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;letter-spacing:.04em;margin-left:4px;}
+.tag-flash{background:var(--abg);color:var(--amb);}
+.tag-fail{background:var(--rbg);color:var(--red);}
+
+/* SAVE */
+.save-btn{width:100%;padding:16px;border-radius:14px;background:var(--bg3);border:1px solid var(--ln2);color:var(--txt);font-size:14px;font-weight:600;cursor:pointer;transition:all .12s;letter-spacing:.02em;}
+.save-btn.ready{background:var(--lim);color:#111;border-color:transparent;font-weight:700;}
+.save-btn.ready:active{background:var(--lim2);}
+.save-btn:not(.ready):active{background:var(--bg4);}
+
+/* SKILL */
+.skill-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.skill-name{font-size:13px;font-weight:600;}
+.skill-feff{font-size:11px;color:var(--amb);font-family:'Courier New',monospace;}
+.skill-track{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.skill-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.insight{margin-top:9px;padding:9px 11px;background:var(--bg3);border-radius:10px;border-left:2px solid var(--lim);font-size:12px;color:var(--txt2);line-height:1.6;}
+.insight strong{color:var(--txt);}
+
+/* SLIDERS */
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--bg4);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--lim);border:3px solid var(--bg);cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--lim);border:3px solid var(--bg);cursor:pointer;}
+.srow{display:flex;align-items:center;gap:10px;}
+.sval{font-size:13px;font-weight:600;color:var(--lim);min-width:42px;text-align:right;font-family:'Courier New',monospace;}
+input[type=number],input[type=text]{flex:1;padding:10px 12px;background:var(--bg3);border:1px solid var(--ln2);border-radius:11px;color:var(--txt);font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none;}
+input[type=number]:focus,input[type=text]:focus{border-color:rgba(212,245,76,0.4);}
+input[type=number]::placeholder,input[type=text]::placeholder{color:var(--txt3);}
+
+/* HISTORY */
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.stat-cell{background:var(--bg3);border:1px solid var(--ln);border-radius:12px;padding:11px 10px;text-align:center;}
+.stat-val{font-size:22px;font-weight:700;}
+.stat-lbl{font-size:9px;color:var(--txt3);margin-top:2px;letter-spacing:.07em;text-transform:uppercase;}
+.slist{display:flex;flex-direction:column;gap:7px;}
+.sitem{display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg2);border:1px solid var(--ln);border-radius:14px;}
+.sbpu{font-size:26px;font-weight:700;min-width:50px;line-height:1;}
+.sinfo{flex:1;}
+.sdate{font-size:10px;color:var(--txt3);letter-spacing:.04em;font-family:'Courier New',monospace;}
+.sdetail{font-size:12px;color:var(--txt2);margin-top:2px;}
+.szone{font-size:9px;padding:4px 8px;border-radius:6px;white-space:nowrap;font-family:'Courier New',monospace;}
+.s-del{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;border-radius:7px;transition:all .12s;flex-shrink:0;}
+.s-del:active{background:var(--rbg);color:var(--red);}
+.empty{text-align:center;padding:50px 20px;color:var(--txt3);font-size:13px;line-height:1.9;}
+.empty-icon{font-size:34px;margin-bottom:10px;}
+
+/* GAMIFICATION */
+.level-banner{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg2);border:1px solid var(--ln);border-radius:16px;margin-bottom:2px;}
+.level-icon{font-size:32px;flex-shrink:0;}
+.level-info{flex:1;}
+.level-title{font-size:16px;font-weight:700;}
+.level-sub{font-size:11px;color:var(--txt2);margin-top:2px;}
+.level-pts{font-family:'Courier New',monospace;font-size:13px;font-weight:600;color:var(--lim);text-align:right;}
+.prog-row{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.prog-track{flex:1;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;background:var(--lim);transition:width .5s cubic-bezier(.4,0,.2,1);}
+.prog-lbl{font-size:10px;color:var(--txt3);font-family:'Courier New',monospace;white-space:nowrap;}
+.week-card{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;padding:14px;}
+.week-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+.week-dots{display:flex;gap:6px;}
+.week-dot{flex:1;height:6px;border-radius:3px;background:var(--bg4);}
+.week-dot.done{background:var(--lim);}
+.week-dot.today{background:var(--lim);opacity:0.5;}
+.records-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.rec-cell{background:var(--bg3);border:1px solid var(--ln);border-radius:12px;padding:11px 12px;}
+.rec-val{font-size:20px;font-weight:700;}
+.rec-lbl{font-size:9px;color:var(--txt3);margin-top:2px;letter-spacing:.06em;text-transform:uppercase;}
+.rec-new{display:inline-block;font-size:9px;padding:1px 6px;border-radius:4px;background:var(--lbg);color:var(--lim);font-family:'Courier New',monospace;margin-left:6px;font-weight:600;}
+
+/* PROFILE */
+.pfield{display:flex;flex-direction:column;gap:7px;}
+.plabel{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;}
+.plabel-link{color:var(--blu);cursor:pointer;text-transform:none;letter-spacing:.04em;font-size:10px;}
+.gender-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.genbtn{padding:13px 6px;text-align:center;font-size:13px;font-weight:600;border:1px solid var(--ln);border-radius:12px;background:var(--bg3);cursor:pointer;transition:all .12s;color:var(--txt2);}
+.genbtn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);color:var(--lim);}
+.genbtn:active{transform:scale(0.97);}
+.divider{height:1px;background:var(--ln);margin:4px 0;}
+.data-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dbtn{padding:13px;text-align:center;font-size:13px;font-weight:500;border:1px solid var(--ln2);border-radius:11px;background:var(--bg3);cursor:pointer;transition:all .12s;color:var(--txt);}
+.dbtn:active{background:var(--bg4);}
+.dbtn.danger{color:var(--red);border-color:rgba(232,64,64,0.25);}
+.profile-info-box{background:var(--bg3);border:1px solid var(--ln);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;}
+.pi-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+.pi-key{color:var(--txt3);font-size:11px;letter-spacing:.04em;}
+.pi-val{font-weight:600;}
+.skill-self-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;}
+.skill-self-btn{padding:9px 12px;border-radius:10px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;color:var(--txt2);text-align:left;}
+.skill-self-btn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);color:var(--lim);font-weight:600;}
+.skill-self-btn:active{transform:scale(0.97);}
+
+/* MODAL */
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);align-items:flex-end;justify-content:center;}
+.modal-backdrop.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--ln2);border-radius:20px 20px 0 0;width:100%;max-width:520px;padding:20px 16px calc(20px + var(--sab));display:flex;flex-direction:column;gap:14px;position:relative;animation:sup .22s cubic-bezier(.4,0,.2,1);max-height:80vh;overflow-y:auto;}
+@keyframes sup{from{transform:translateY(60px);opacity:0;}to{transform:none;opacity:1;}}
+.modal-title{font-size:17px;font-weight:700;}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--bg4);border:none;color:var(--txt2);width:30px;height:30px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.plist{display:flex;flex-direction:column;gap:7px;}
+.pe{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--bg3);border:1px solid var(--ln);border-radius:12px;cursor:pointer;transition:all .12s;}
+.pe:active{background:var(--bg4);}
+.pe.active-p{border-color:rgba(212,245,76,0.4);background:var(--lbg);}
+.pe-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+.av0{background:rgba(212,245,76,0.15);color:var(--lim);}
+.av1{background:rgba(64,200,152,0.15);color:var(--tel);}
+.av2{background:rgba(88,168,240,0.15);color:var(--blu);}
+.av3{background:rgba(240,168,50,0.15);color:var(--amb);}
+.av4{background:rgba(232,64,64,0.15);color:var(--red);}
+.av5{background:rgba(160,96,240,0.15);color:var(--pur);}
+.pe-info{flex:1;}
+.pe-name{font-size:14px;font-weight:600;}
+.pe-sub{font-size:10px;color:var(--txt3);font-family:'Courier New',monospace;margin-top:1px;}
+.pe-check{color:var(--lim);font-size:16px;opacity:0;}
+.pe.active-p .pe-check{opacity:1;}
+.pe-del{background:none;border:none;color:var(--txt3);font-size:20px;cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;}
+.pe-del:active{background:var(--rbg);color:var(--red);}
+.new-p-row{display:flex;gap:8px;}
+.p-input{flex:1;padding:11px 13px;background:var(--bg3);border:1px solid var(--ln2);border-radius:11px;color:var(--txt);font-size:14px;outline:none;font-family:inherit;}
+.p-input:focus{border-color:rgba(212,245,76,0.4);}
+.p-input::placeholder{color:var(--txt3);}
+.p-create{padding:11px 16px;border-radius:11px;background:var(--lim);color:#111;font-size:14px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:all .12s;}
+.p-create:active{background:var(--lim2);}
+.p-create:disabled{background:var(--bg4);color:var(--txt3);cursor:default;}
+
+/* DOCS */
+.doc-grid{display:flex;flex-direction:column;gap:6px;}
+.ditem{display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg2);border:1px solid var(--ln);border-radius:14px;cursor:pointer;transition:background .12s;}
+.ditem:active{background:var(--bg3);}
+.dbadge{min-width:46px;padding:4px 6px;border-radius:6px;text-align:center;font-size:9px;font-weight:600;letter-spacing:.04em;background:var(--bg4);color:var(--txt3);font-family:'Courier New',monospace;}
+.dbadge.lime{background:var(--lbg);color:var(--lim);}
+.dbadge.amber{background:var(--abg);color:var(--amb);}
+.dbadge.blue{background:var(--bbg);color:var(--blu);}
+.dbadge.teal{background:var(--tbg);color:var(--tel);}
+.dtext{flex:1;}
+.dtitle{font-size:14px;font-weight:600;}
+.dsub{font-size:11px;color:var(--txt3);font-family:'Courier New',monospace;margin-top:1px;}
+.dchev{color:var(--txt3);font-size:16px;}
+.doc-detail{display:none;flex-direction:column;gap:12px;}
+.doc-detail.active{display:flex;}
+.doc-toc.hidden{display:none;}
+.back-btn{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt3);cursor:pointer;background:none;border:none;padding:4px 0;letter-spacing:.04em;font-family:'Courier New',monospace;}
+.back-btn:active{color:var(--txt);}
+.detail-title{font-size:20px;font-weight:700;line-height:1.2;}
+.detail-sub{font-size:11px;color:var(--txt3);font-family:'Courier New',monospace;margin-top:3px;}
+.doc-body{font-size:13px;color:var(--txt2);line-height:1.75;display:flex;flex-direction:column;gap:10px;}
+.doc-body h3{font-size:13px;font-weight:700;color:var(--txt);}
+.doc-formula{font-family:'Courier New',monospace;font-size:11px;background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:11px 13px;color:var(--lim);line-height:2;overflow-x:auto;}
+.doc-formula .c{color:var(--txt3);font-style:italic;}
+.doc-table{width:100%;border-collapse:collapse;font-size:12px;}
+.doc-table th{text-align:left;padding:7px 9px;font-weight:700;color:var(--txt);border-bottom:1px solid var(--ln);font-size:10px;letter-spacing:.06em;text-transform:uppercase;}
+.doc-table td{padding:8px 9px;border-bottom:1px solid var(--ln);color:var(--txt2);font-size:12px;vertical-align:top;}
+.doc-table tr:last-child td{border-bottom:none;}
+.doc-src{font-size:10px;color:var(--txt3);font-family:'Courier New',monospace;padding:8px 10px;background:var(--bg3);border-radius:8px;line-height:1.6;}
+.doc-warn{padding:11px 13px;background:var(--abg);border:1px solid rgba(240,168,50,0.2);border-radius:10px;font-size:12px;color:var(--amb);line-height:1.65;}
+
+/* TOAST */
+.onboard{position:fixed;inset:0;z-index:800;background:#0e0e0e;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:24px;}
+.onboard-logo{margin-bottom:4px;}
+.onboard-title{font-size:26px;font-weight:700;text-align:center;line-height:1.2;}
+.onboard-sub{font-size:14px;color:#666;text-align:center;line-height:1.6;max-width:280px;}
+.onboard-input{width:100%;padding:16px 18px;background:#1a1a1a;border:1.5px solid rgba(212,245,76,0.3);border-radius:14px;color:#f0ede8;font-size:18px;font-weight:600;outline:none;text-align:center;font-family:inherit;}
+.onboard-input:focus{border-color:rgba(212,245,76,0.7);}
+.onboard-input::placeholder{color:#333;font-weight:400;}
+.onboard-btn{width:100%;padding:16px;border-radius:14px;background:#d4f54c;color:#111;font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .12s;opacity:0.4;pointer-events:none;}
+.onboard-btn.ready{opacity:1;pointer-events:auto;}
+.onboard-btn:active{background:#b8d83a;transform:scale(0.98);}
+.onboard-hint{font-size:11px;color:#333;font-family:monospace;letter-spacing:.06em;}
+.toast{position:fixed;bottom:calc(var(--nav) + var(--sab) + 10px);left:50%;transform:translateX(-50%);background:var(--txt);color:var(--bg);font-size:12px;padding:9px 16px;border-radius:20px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999;font-family:'Courier New',monospace;}
+.toast.show{opacity:1;}
+canvas{display:block;}
+</style>
+</head>
+<body>
+<div id="shell">
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo-wrap">
+    <!-- Logo D: Hexagon Boulder + geometric figure inside -->
+    <svg class="logo-svg" width="38" height="38" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="32,3 55,16 55,42 32,55 9,42 9,16" fill="none" stroke="#d4f54c" stroke-width="3"/>
+      <circle cx="32" cy="23" r="7" fill="#d4f54c"/>
+      <line x1="16" y1="19" x2="25" y2="27" stroke="#d4f54c" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="48" y1="19" x2="39" y2="27" stroke="#d4f54c" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="16" cy="18" r="4" fill="#d4f54c"/>
+      <circle cx="48" cy="18" r="4" fill="#d4f54c"/>
+      <path d="M25 33 Q32 40 39 33" stroke="#d4f54c" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>
+    <div>
+      <span class="greet-hi">Was geht,</span>
+      <span class="greet-name" id="greetName">—</span>
+    </div>
+  </div>
+  <div class="prof-btn" onclick="openModal()">
+    <div class="prof-dot"></div>
+    <span id="profBtnLbl">Profil</span>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-backdrop" id="modal" onclick="if(event.target===this&&loadProfiles().length)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Profile</div>
+    <div class="plist" id="plist"></div>
+    <div class="new-p-row">
+      <input class="p-input" id="newName" type="text" placeholder="Dein Name…" maxlength="24"
+        oninput="document.getElementById('createBtn').disabled=!this.value.trim()"
+        onkeydown="if(event.key==='Enter')createProfile()">
+      <button class="p-create" id="createBtn" onclick="createProfile()" disabled>+ Neu</button>
+    </div>
+  </div>
+</div>
+
+<!-- SESSION PAGE -->
+<div class="page active" id="page-session">
+  <div class="card card-lime">
+    <div class="score-wrap">
+      <div class="ring-outer">
+        <svg viewBox="0 0 148 148" width="148" height="148">
+          <circle cx="74" cy="74" r="63" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="7"/>
+          <circle id="ringArc" cx="74" cy="74" r="63" fill="none" stroke="#d4f54c" stroke-width="7" stroke-linecap="round" stroke-dasharray="396" stroke-dashoffset="396" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
+        </svg>
+        <div class="ring-inner">
+          <div class="snum dim" id="scoreNum">—</div>
+          <div class="slbl">BPU</div>
+        </div>
+      </div>
+      <div class="szone" id="scoreZone"></div>
+    </div>
+    <div class="fstrip">
+      <div class="fcell" onclick="navToDoc('difficulty')"><span class="fv" id="fRaw">—</span><span class="fk">S_raw</span></div>
+      <div class="fcell" onclick="navToDoc('eff')"><span class="fv" id="fEff" style="color:var(--amb)">—</span><span class="fk">F_eff</span></div>
+      <div class="fcell" onclick="navToDoc('age')"><span class="fv" id="fAge" style="color:var(--blu)">—</span><span class="fk">F_alter</span></div>
+      <div class="fcell" onclick="navToDoc('gender')"><span class="fv" id="fGen" style="color:var(--tel)">—</span><span class="fk">F_gesch</span></div>
+      <div class="fcell" onclick="navToDoc('duration')"><span class="fv" id="fDur" style="color:var(--lim)">—</span><span class="fk">F_dauer</span></div>
+    </div>
+    <div class="formula" id="formulaBox">BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100</div>
+    <div class="session-msg" id="sessionMsg"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Session-Dauer</div>
+    <div class="dur-row">
+      <div class="dur-btn" id="db-short" onclick="setDur('short')"><span class="di">⚡</span><span class="dl">&lt; 1h</span><span class="ds">Intensiv</span></div>
+      <div class="dur-btn active" id="db-mid" onclick="setDur('mid')"><span class="di">◎</span><span class="dl">1–3h</span><span class="ds">Normal</span></div>
+      <div class="dur-btn" id="db-long" onclick="setDur('long')"><span class="di">∞</span><span class="dl">&gt; 3h</span><span class="ds">Extensiv</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Schwierigkeitsgrad</div>
+    <div class="numpad">
+      <div class="gbtn" data-g="1" onclick="pickGrade(1)"><span class="gn">1</span><span class="gs">Warm-up</span></div>
+      <div class="gbtn" data-g="2" onclick="pickGrade(2)"><span class="gn">2</span><span class="gs">Einsteig.</span></div>
+      <div class="gbtn" data-g="3" onclick="pickGrade(3)"><span class="gn">3</span><span class="gs">Aufbau</span></div>
+      <div class="gbtn" data-g="4" onclick="pickGrade(4)"><span class="gn">4</span><span class="gs">Solide</span></div>
+      <div class="gbtn" data-g="5" onclick="pickGrade(5)"><span class="gn">5</span><span class="gs">Stark</span></div>
+      <div class="gbtn" data-g="6" onclick="pickGrade(6)"><span class="gn">6</span><span class="gs">Heftig</span></div>
+      <div class="gbtn" data-g="7" onclick="pickGrade(7)"><span class="gn">7</span><span class="gs">Beastmode</span></div>
+      <div class="gbtn" data-g="8" onclick="pickGrade(8)"><span class="gn">8</span><span class="gs">Ape-Level</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Versuche &amp; Ergebnis <span style="font-size:9px;color:var(--txt3);font-family:'Courier New',monospace">Grad <span id="selGradeLbl">—</span></span></div>
+    <div class="att-section">
+      <div>
+        <div class="att-sublabel">Anzahl Versuche</div>
+        <div class="att-row">
+          <div class="abtn" data-v="1" onclick="pickVer('1')"><span class="am" style="color:var(--amb)">1×</span><span class="as">Flash!</span></div>
+          <div class="abtn active" data-v="low" onclick="pickVer('low')"><span class="am">2–5×</span><span class="as">Wenige</span></div>
+          <div class="abtn" data-v="many" onclick="pickVer('many')"><span class="am">6–20×</span><span class="as">Projekt</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="att-sublabel">Ergebnis</div>
+        <div class="res-row">
+          <div class="abtn active" data-r="top" onclick="pickRes('top')"><span class="am">✓ Top!</span><span class="as">Geschafft</span></div>
+          <div class="abtn" data-r="fail" onclick="pickRes('fail')"><span class="am">✗ Kein Top</span><span class="as">Nicht geschafft</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="add-btn" id="addBtn" onclick="addBoulder()" disabled>+ Hinzufügen</button>
+  </div>
+
+  <div class="card" id="bListCard" style="display:none">
+    <div class="ctitle">Session <span id="bCount" style="color:var(--lim)"></span> <span onclick="clearBoulders()" style="cursor:pointer;color:var(--txt3);font-size:10px">Leeren</span></div>
+    <div class="blist" id="bList"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Dein Level <span class="ctitle-link" onclick="navToDoc('eff')">Details →</span></div>
+    <div class="skill-row"><span class="skill-name" id="skillName">—</span><span class="skill-feff" id="skillFeff"></span></div>
+    <div class="skill-track"><div class="skill-fill" id="skillFill" style="width:25%;background:var(--lim)"></div></div>
+    <div class="insight" id="skillInsight">Logge deine ersten Sessions — dann berechne ich dein Level.</div>
+  </div>
+
+  <button class="save-btn" id="saveBtn" onclick="saveSession()">Session speichern</button>
+</div>
+
+<!-- HISTORY PAGE -->
+<div class="page" id="page-history">
+  <div class="stat-row">
+    <div class="stat-cell"><div class="stat-val" id="stSess">—</div><div class="stat-lbl">Sessions</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stAvg">—</div><div class="stat-lbl">Ø BPU</div></div>
+    <div class="stat-cell"><div class="stat-val" id="stBest">—</div><div class="stat-lbl">Best BPU</div></div>
+  </div>
+
+  <!-- Level Banner -->
+  <div class="level-banner" id="levelBanner" style="display:none">
+    <div class="level-icon" id="levelIcon">🦍</div>
+    <div class="level-info">
+      <div class="level-title" id="levelTitle">—</div>
+      <div class="level-sub" id="levelSub">—</div>
+      <div class="prog-row">
+        <div class="prog-track"><div class="prog-fill" id="levelProg" style="width:0%"></div></div>
+        <div class="prog-lbl" id="levelProgLbl">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week Goal -->
+  <div class="week-card" id="weekCard" style="display:none">
+    <div class="week-title" id="weekTitle">Diese Woche</div>
+    <div class="week-dots" id="weekDots"></div>
+  </div>
+
+  <!-- Records -->
+  <div class="records-grid" id="recordsGrid" style="display:none">
+    <div class="rec-cell"><div class="rec-val" id="recBestBPU">—</div><div class="rec-lbl">Beste Session</div></div>
+    <div class="rec-cell"><div class="rec-val" id="recStreak">—</div><div class="rec-lbl">Sessions/Monat</div></div>
+    <div class="rec-cell"><div class="rec-val" id="recTops">—</div><div class="rec-lbl">Tops gesamt</div></div>
+    <div class="rec-cell"><div class="rec-val" id="recBestGrade">—</div><div class="rec-lbl">Bester Grad</div></div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Verlauf <span id="baselineLbl" style="color:var(--lim);font-size:10px;font-family:'Courier New',monospace"></span></div>
+    <canvas id="histCanvas" height="80" style="width:100%"></canvas>
+  </div>
+
+  <div class="slist" id="sessionList">
+    <div class="empty"><div class="empty-icon">🦍</div>Noch keine Sessions.<br>Rauf auf die Wand und losgelegt!</div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="page" id="page-profile">
+
+  <!-- Profile info summary -->
+  <div class="card">
+    <div class="ctitle">Mein Profil</div>
+    <div class="profile-info-box" id="profileInfoBox">
+      <div class="pi-row"><span class="pi-key">Name</span><span class="pi-val" id="piName">—</span></div>
+      <div class="pi-row"><span class="pi-key">Alter</span><span class="pi-val" id="piAge">—</span></div>
+      <div class="pi-row"><span class="pi-key">Geschlecht</span><span class="pi-val" id="piGender">—</span></div>
+      <div class="pi-row"><span class="pi-key">Level</span><span class="pi-val" id="piLevel">—</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Profil bearbeiten</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+
+      <div class="pfield">
+        <div class="plabel">Name</div>
+        <input type="text" id="profileNameInput" placeholder="Dein Name" maxlength="24"
+          oninput="saveProfileName()" style="width:100%">
+        <div style="font-size:11px;color:var(--txt3);margin-top:4px">Änderung wird sofort gespeichert.</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="pfield">
+        <div class="plabel">Geschlecht <span class="plabel-link" onclick="navToDoc('gender')">Details →</span></div>
+        <div class="gender-row">
+          <div class="genbtn" id="gb-w" onclick="setGender('w')">Weiblich</div>
+          <div class="genbtn active" id="gb-m" onclick="setGender('m')">Männlich</div>
+          <div class="genbtn" id="gb-d" onclick="setGender('d')">Divers</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="pfield">
+        <div class="plabel">Alter <span class="plabel-link" onclick="navToDoc('age')">Details →</span></div>
+        <div class="srow">
+          <input type="range" min="10" max="75" value="30" id="ageSlider" oninput="document.getElementById('ageVal').textContent=this.value+' J.';saveProfile();recalc()">
+          <span class="sval" id="ageVal">30 J.</span>
+        </div>
+        <canvas id="ageCanvas" height="68" style="width:100%;margin-top:8px;border-radius:8px"></canvas>
+      </div>
+
+
+
+      <div class="divider"></div>
+
+      <div class="pfield">
+        <div class="plabel">Selbsteinschätzung Level <span class="plabel-link" onclick="navToDoc('eff')">Details →</span></div>
+        <div style="font-size:12px;color:var(--txt2);margin-bottom:8px">Wird als Startwert genutzt bis genug Sessions vorliegen.</div>
+        <div class="skill-self-row" id="selfSkillRow" style="flex-direction:column;gap:7px"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="pfield">
+        <div class="plabel">Modellparameter</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt3)">k — Schwierigkeitsskalierung <span class="plabel-link" onclick="navToDoc('difficulty')">→</span></span><span class="sval" style="font-size:11px" id="kVal">0.35</span></div>
+            <input type="range" min="20" max="50" value="35" id="kSlider" oninput="document.getElementById('kVal').textContent=(this.value/100).toFixed(2);saveProfile();recalc()">
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt3)">N — Gleitender Ø (Sessions) <span class="plabel-link" onclick="navToDoc('baseline')">→</span></span><span class="sval" style="font-size:11px" id="nVal">10</span></div>
+            <input type="range" min="3" max="20" value="10" id="nSlider" oninput="document.getElementById('nVal').textContent=this.value;saveProfile();recalc()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ctitle">Daten</div>
+    <div class="data-btns">
+      <div class="dbtn" onclick="exportData()">Exportieren</div>
+      <div class="dbtn danger" onclick="resetProfile()">Sessions löschen</div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCS PAGE -->
+<div class="page" id="page-docs">
+  <div class="doc-toc" id="docToc">
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:10px;line-height:1.65">Alle Faktoren, Formeln und wissenschaftlichen Grundlagen. Tippe für Details.</p>
+    <div class="doc-grid">
+      <div class="ditem" onclick="openDoc('overview')"><span class="dbadge lime">Formel</span><div class="dtext"><div class="dtitle">BPU — Das Modell</div><div class="dsub">Vollständige Formel & Konzept</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('difficulty')"><span class="dbadge">S_raw</span><div class="dtext"><div class="dtitle">Schwierigkeitsgewichtung</div><div class="dsub">Exponentiell · k = 0.35</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('attempts')"><span class="dbadge amber">Flash</span><div class="dtext"><div class="dtitle">Versuche & Ergebnis</div><div class="dsub">Zwei-Achsen-Modell</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('baseline')"><span class="dbadge">Base</span><div class="dtext"><div class="dtitle">Baseline & Level</div><div class="dsub">Gleitender Ø · Fenster N</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('eff')"><span class="dbadge amber">F_eff</span><div class="dtext"><div class="dtitle">Kletterökonomie</div><div class="dsub">Effizienzfaktor · α = 0.30</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('age')"><span class="dbadge blue">F_alt</span><div class="dtext"><div class="dtitle">Altersfaktor</div><div class="dsub">Peak 42 J. · 4 Phasen</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('gender')"><span class="dbadge teal">F_ges</span><div class="dtext"><div class="dtitle">Geschlechtsnormierung</div><div class="dsub">Fingerkraft-Normwerte</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('duration')"><span class="dbadge lime">F_dur</span><div class="dtext"><div class="dtitle">Session-Dauer</div><div class="dsub">Neutrale Normierung</div></div><span class="dchev">›</span></div>
+
+      <div class="ditem" onclick="openDoc('levels')"><span class="dbadge" style="background:rgba(212,245,76,0.08);color:#d4f54c">🦍</span><div class="dtext"><div class="dtitle">Level-System</div><div class="dsub">8 Stufen · Faultier bis Ape King</div></div><span class="dchev">›</span></div>
+      <div class="ditem" onclick="openDoc('interpretation')"><span class="dbadge lime">BPU</span><div class="dtext"><div class="dtitle">Score lesen</div><div class="dsub">Zonen · Vergleich · Grenzen</div></div><span class="dchev">›</span></div>
+    </div>
+  </div>
+  <div class="doc-detail" id="docDetail">
+    <button class="back-btn" onclick="closeDoc()">← Übersicht</button>
+    <div><div class="detail-title" id="docTitle"></div><div class="detail-sub" id="docSub"></div></div>
+    <div class="doc-body" id="docBody"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <button class="nb active" onclick="showPage('session')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Session</button>
+  <button class="nb" onclick="showPage('history')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h12"/></svg>Verlauf</button>
+  <button class="nb" onclick="showPage('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profil</button>
+  <button class="nb" onclick="showPage('docs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h10M4 18h12"/><circle cx="18" cy="18" r="3"/><path d="m21 21-1.5-1.5"/></svg>Logik</button>
+</nav>
+</div>
+
+<!-- ONBOARDING -->
+<div class="onboard" id="onboard" style="display:none">
+  <div class="onboard-logo">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <polygon points="32,3 55,16 55,42 32,55 9,42 9,16" fill="none" stroke="#d4f54c" stroke-width="3"/>
+      <circle cx="32" cy="23" r="7" fill="#d4f54c"/>
+      <line x1="16" y1="19" x2="25" y2="27" stroke="#d4f54c" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="48" y1="19" x2="39" y2="27" stroke="#d4f54c" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="16" cy="18" r="4" fill="#d4f54c"/>
+      <circle cx="48" cy="18" r="4" fill="#d4f54c"/>
+      <path d="M25 33 Q32 40 39 33" stroke="#d4f54c" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+  <div>
+    <div class="onboard-title">Willkommen bei BPU</div>
+    <div style="font-size:13px;color:#555;text-align:center;margin-top:4px;font-family:monospace;letter-spacing:.04em">Boulder Performance Unit</div>
+  </div>
+  <div class="onboard-sub">Wie heisst du? Dein Name wird fuer das Profil und die Begruessung genutzt.</div>
+  <input class="onboard-input" id="onboardInput" type="text" placeholder="Dein Name"
+    maxlength="24" autocomplete="off" autocorrect="off"
+    oninput="var v=this.value.trim();document.getElementById('onboardBtn').classList.toggle('ready',v.length>0)"
+    onkeydown="if(event.key==='Enter')finishOnboard()">
+  <button class="onboard-btn" id="onboardBtn" onclick="finishOnboard()">Weiter</button>
+  <div class="onboard-hint">Weitere Profile kannst du jederzeit hinzufügen.</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════
+var GF={w:1.00,m:0.88,d:0.94};
+var DURF={short:1.25,mid:1.00,long:0.85};
+var F_VER={'1':1.30,low:1.00,many:0.80};  // 1=Flash, low=2-5 versuche, many=6-20 (Projekt)
+var F_RES={top:1.00,fail:0.60};
+var VER_L={'1':'Flash · 1 Versuch',low:'Wenige · 2–5',many:'Projekt · 6–20'};
+var GCOL=['#98e0b8','#60c890','#38b070','#2898a0','#4888d8','#8060d8','#d84898','#f05050'];
+var AVCOL=['av0','av1','av2','av3','av4','av5'];
+var SP='bpu5_profiles', SA='bpu5_active';
+
+// Level system — motivating names with climbing character
+var LEVELS=[
+  {min:0,   max:1.5, icon:'🦥', title:'Faultier',    sub:'Du hast die Wand entdeckt \u2014 los geht\'s!',       color:'#98e0b8'},
+  {min:1.5, max:2.5, icon:'🐇', title:'Hase',        sub:'Die Grundbewegungen sitzen. Weiter so!',                color:'#60c890'},
+  {min:2.5, max:3.5, icon:'🐈', title:'Katze',       sub:'Koordination wächst — du landest immer öfter oben.',    color:'#38b070'},
+  {min:3.5, max:4.5, icon:'🐆', title:'Leopard',     sub:'Solide Technik, erste Projekte. Du wirst gefährlich.',   color:'#2898a0'},
+  {min:4.5, max:5.5, icon:'🐒', title:'Schimpanse',  sub:'Dynamisch, präzise, schwer zu stoppen.',                color:'#4888d8'},
+  {min:5.5, max:6.5, icon:'🦧', title:'Orang-Utan',  sub:'Konsistenz auf hohem Niveau. Echter Respekt.',          color:'#8060d8'},
+  {min:6.5, max:7.5, icon:'🦍', title:'Gorilla',     sub:'Du dominierst die Wand. Fast nichts hält dich auf.',    color:'#d84898'},
+  {min:7.5, max:8.1, icon:'👑', title:'Ape King',    sub:'Das absolute Limit. Legenden des Steins.',              color:'#f05050'},
+];
+
+// Self-assessment options for cold start
+// Self-assessment levels — 8 Stufen analog zu LEVELS, mit Gradangaben
+// Beschreibungen neutral und sachlich, basierend auf offiziellen Gradcharakteristiken
+var SELF_LEVELS=[
+  {key:'sloth',    label:'Faultier',   animal:'🦥', grade:1.0,
+   gradeRange:'Grad 1',
+   desc:'Ich bin neu an der Wand — Tritte und große Griffe sind meine Freunde.',
+   detail:'Du stehst am Anfang. Einfache Züge, große Tritte und Griffe. Die Basis der Klettertechnik wird aufgebaut.'},
+  {key:'rabbit',   label:'Hase',       animal:'🐇', grade:2.0,
+   gradeRange:'Grad 1–2',
+   desc:'Grundbewegungen sitzen — solange die Griffe groß genug sind.',
+   detail:'Einfache Routen kommen gut. Du steigst in mittlere Schwierigkeiten ein, das erste Crux wird zur Herausforderung.'},
+  {key:'cat',      label:'Katze',      animal:'🐈', grade:3.0,
+   gradeRange:'Grad 2–3',
+   desc:'Ich lande meistens oben. Die Technik auf kleinen Tritten ist im Aufbau.',
+   detail:'Mittlere Routen funktionieren. Körperspannung und Balance entwickeln sich, kleine Tritte werden sicherer.'},
+  {key:'leopard',  label:'Leopard',    animal:'🐆', grade:4.0,
+   gradeRange:'Grad 3–4',
+   desc:'Ich lese Routen. Manche Passagen lesen zurück.',
+   detail:'Solide Technik, gute Körperpositionierung. Du arbeitest an schwierigeren Routen und betritt den Projektbereich.'},
+  {key:'chimp',    label:'Schimpanse', animal:'🐒', grade:5.0,
+   gradeRange:'Grad 4–5',
+   desc:'Kleine Griffe? Kein Problem. Kleine Tritte? Diskutabel.',
+   detail:'Starke Finger, dynamische Bewegungen, gutes Routenlesen. Du flasht Routen, an denen andere projektieren.'},
+  {key:'orang',    label:'Orang-Utan', animal:'🦧', grade:6.0,
+   gradeRange:'Grad 5–6',
+   desc:'Tritte werden optional. Vertrauen in die Fingerkraft wächst.',
+   detail:'Konsistenz auf hohem Niveau. Schwierige Routen werden zuverlässig getoppt, du arbeitest an Grad-6-Projekten.'},
+  {key:'gorilla',  label:'Gorilla',    animal:'🦍', grade:7.0,
+   gradeRange:'Grad 6–7',
+   desc:'Griffe und Tritte werden überbewertet.',
+   detail:'Maximale Fingerkraft, präzise Technik, mentale Stärke. Du flashst was andere nur anschauen.'},
+  {key:'apeking',  label:'Ape King',   animal:'👑', grade:7.8,
+   gradeRange:'Grad 7–8',
+   desc:'Die Wand ist mein natürlicher Lebensraum.',
+   detail:'Das absolute Limit. Elite-Niveau. Routen am oberen Ende der Hallenskala werden konsistent geklettert.'},
+];
+
+// Motivational messages by zone
+var MSGS={
+  low:['Leichter Tag — auch das gehört dazu. Erholung ist Training.','Manchmal ist weniger mehr. Dein Körper tankt auf.','Regeneration ist Teil des Prozesses. Morgen wieder angreifen!'],
+  normal:['Solide Session! Das ist der Stoff aus dem Fortschritt besteht.','Konsistenz schlägt Intensität — du bist auf dem richtigen Weg.','Gute Arbeit! Jede Session bringt dich weiter.'],
+  strong:['Überdurchschnittlich! Du bist heute über dich hinausgewachsen.','Starke Session — das war kein Zufall, das ist dein Level.','Feuer! So sieht echter Fortschritt aus.'],
+  beast:['BESTLEISTUNG! Das war Ape-Level — erinnere dich an dieses Gefühl.','Historische Session. Dein persönlicher Rekord wurde heute neu gesetzt!','Legendär. Heute wirst du dich noch lange erinnern.'],
+};
+
+// ═══════════════════════════════════════════
+// WORKING STATE
+// ═══════════════════════════════════════════
+var S={id:null,name:'',gender:'m',age:30,k:0.35,n:10,dur:'mid',selfLevel:'cat',boulders:[],sessions:[]};
+var curGrade=null,curVer='low',curRes='top';
+
+// ═══════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function loadProfiles(){return lsGet(SP)||[];}
+function saveProfiles(l){lsSet(SP,l);}
+function getAID(){return localStorage.getItem(SA)||null;}
+function setAID(id){try{localStorage.setItem(SA,id);}catch(e){}}
+
+function mkProf(name){
+  return{id:Date.now()+'x'+Math.random().toString(36).slice(2,6),name:name.trim(),
+    gender:'m',age:30,k:0.35,n:10,selfLevel:'cat',sessions:[],createdAt:Date.now()};
+}
+
+// ═══════════════════════════════════════════
+// PROFILE MANAGEMENT
+// ═══════════════════════════════════════════
+function createProfile(){
+  var inp=document.getElementById('newName'),name=inp.value.trim();if(!name)return;
+  var list=loadProfiles();
+  if(list.find(function(p){return p.name.toLowerCase()===name.toLowerCase();})){showToast('Name bereits vergeben');return;}
+  var p=mkProf(name);list.push(p);saveProfiles(list);setAID(p.id);
+  inp.value='';document.getElementById('createBtn').disabled=true;
+  // Restore modal close button after setup
+  document.getElementById('modal').querySelector('.modal-close').style.display='flex';
+  document.getElementById('modal').querySelector('.modal-title').textContent='Profile';
+  document.getElementById('modal').classList.remove('open');
+  loadActive();renderPList();showToast('Hey '+p.name+'! Willkommen beim BPU.');
+}
+
+function switchProfile(id){setAID(id);loadActive();closeModal();showPage('session');showToast('Hey '+S.name+'! Los geht\'s.');}
+
+function deleteProfile(id,e){
+  e.stopPropagation();
+  var list=loadProfiles();
+  if(list.length<=1){showToast('Letztes Profil kann nicht gelöscht werden');return;}
+  var p=list.find(function(x){return x.id===id;});
+  if(!confirm('Profil "'+p.name+'" und alle Sessions löschen?'))return;
+  list=list.filter(function(x){return x.id!==id;});saveProfiles(list);
+  if(getAID()===id){setAID(list[0].id);loadActive();}
+  renderPList();updateTopbar();
+}
+
+function loadActive(){
+  try{
+    var list=loadProfiles();
+    if(!list.length){var p=mkProf('Mein Profil');list=[p];saveProfiles(list);setAID(p.id);}
+    var id=getAID(),active=list.find(function(p){return p.id===id;})||list[0];
+    setAID(active.id);
+    S.id=active.id;S.name=active.name;S.gender=active.gender||'m';S.age=active.age||30;
+    S.k=active.k||0.35;S.n=active.n||10;S.sessions=active.sessions||[];S.boulders=[];
+    S.dur=S.dur||'mid';S.selfLevel=active.selfLevel||'cat';
+  }catch(e){
+    S.id='tmp';S.name='';S.gender='m';S.age=30;S.k=0.35;S.n=10;
+    S.sessions=[];S.boulders=[];S.dur='mid';S.selfLevel='cat';
+  }
+  syncUI();updateTopbar();
+}
+
+function persistActive(){
+  if(!S.id||S.id==='tmp')return;
+  try{
+    var list=loadProfiles(),idx=list.findIndex(function(p){return p.id===S.id;});
+    if(idx<0)return;
+    list[idx]=Object.assign({},list[idx],{
+      name:S.name,gender:S.gender,age:S.age,k:S.k,n:S.n,
+      selfLevel:S.selfLevel,sessions:S.sessions
+    });
+    saveProfiles(list);
+  }catch(e){}
+}
+
+function syncUI(){
+  setGenderUI(S.gender);setDurUI(S.dur||'mid');
+  document.getElementById('ageSlider').value=S.age;
+  document.getElementById('ageVal').textContent=S.age+' J.';
+  document.getElementById('kSlider').value=Math.round(S.k*100);
+  document.getElementById('kVal').textContent=S.k.toFixed(2);
+  document.getElementById('nSlider').value=S.n;
+  document.getElementById('nVal').textContent=S.n;
+  document.getElementById('profileNameInput').value=S.name||'';
+  renderSelfSkill();renderBoulders();recalc();
+}
+
+function updateTopbar(){
+  document.getElementById('greetName').textContent=S.name||'—';
+  var n=loadProfiles().length;
+  document.getElementById('profBtnLbl').textContent=n>1?(n+' Profile'):'Profil';
+}
+
+function renderPList(isSetup){
+  var list=loadProfiles(),aid=getAID();
+  var el=document.getElementById('plist');
+  if(!list.length){el.innerHTML='';return;}
+  var out='';
+  for(var i=0;i<list.length;i++){
+    var p=list[i];
+    var av=AVCOL[i%AVCOL.length];
+    var init=(p.name||'?')[0].toUpperCase();
+    var isA=p.id===aid;
+    var sc=p.sessions.length;
+    out+='<div class="pe'+(isA?' active-p':'')+'" data-pid="'+p.id+'" onclick="switchProfile(this.dataset.pid)">'
+      +'<div class="pe-av '+av+'">'+init+'</div>'
+      +'<div class="pe-info"><div class="pe-name">'+p.name+'</div>'
+      +'<div class="pe-sub">'+sc+' Session'+(sc!==1?'s':'')+'</div></div>'
+      +'<span class="pe-check">✓</span>'
+      +(!isA&&!isSetup?'<button class="pe-del" data-dpid="'+p.id+'" onclick="deleteProfile(this.dataset.dpid,event)">×</button>':'')
+      +'</div>';
+  }
+  el.innerHTML=out;
+}
+
+function openModal(isSetup){
+  renderPList(isSetup);
+  var m=document.getElementById('modal');
+  m.classList.add('open');
+  var title=m.querySelector('.modal-title');
+  if(isSetup){
+    title.textContent='Willkommen! Wie heißt du?';
+    m.querySelector('.modal-close').style.display='none';
+  }else{
+    title.textContent='Profile';
+    m.querySelector('.modal-close').style.display='flex';
+  }
+  if(isSetup){
+    // focus the input
+    setTimeout(function(){document.getElementById('newName').focus();},200);
+  }
+}
+function closeModal(){
+  // Don't allow closing if no profiles exist (setup mode)
+  if(!loadProfiles().length)return;
+  document.getElementById('modal').classList.remove('open');
+}
+
+function saveProfileName(){
+  var inp=document.getElementById('profileNameInput');
+  var val=inp.value.trim();
+  if(!val)return;
+  S.name=val;
+  var list=loadProfiles();
+  var idx=list.findIndex(function(p){return p.id===S.id;});
+  if(idx>=0){list[idx].name=val;saveProfiles(list);}
+  updateTopbar();
+  if(document.getElementById('piName'))document.getElementById('piName').textContent=val;
+}
+
+function saveProfile(){
+  S.age=parseInt(document.getElementById('ageSlider').value);
+  S.k=parseFloat(document.getElementById('kSlider').value)/100;
+  S.n=parseInt(document.getElementById('nSlider').value);
+  
+  persistActive();updateProfileInfo();
+}
+
+function setSelfLevel(key){
+  if(!key)return;
+  S.selfLevel=key;
+  persistActive();recalc();
+  renderSelfSkill();
+  var lev=null;
+  for(var i=0;i<SELF_LEVELS.length;i++){if(SELF_LEVELS[i].key===key){lev=SELF_LEVELS[i];break;}}
+  if(lev)showToast(lev.detail);
+}
+
+function renderSelfSkill(){
+  var row=document.getElementById('selfSkillRow');
+  if(!row)return;
+  var out='';
+  for(var i=0;i<SELF_LEVELS.length;i++){
+    var l=SELF_LEVELS[i];
+    var isAct=S.selfLevel===l.key;
+    out+='<div class="skill-self-btn'+(isAct?' active':'')+'" data-key="'+l.key+'" onclick="setSelfLevel(this.dataset.key)">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<div style="display:flex;align-items:center;gap:7px">'
+      +'<span style="font-size:18px;line-height:1">'+l.animal+'</span>'
+      +'<span style="font-weight:600;font-size:13px">'+l.label+'</span>'
+      +'</div>'
+      +'<span style="font-size:10px;font-family:monospace;color:'+(isAct?'var(--lim)':'var(--txt3)')+'">'+l.gradeRange+'</span>'
+      +'</div>'
+      +'<div style="font-size:11px;color:'+(isAct?'var(--lim)':'var(--txt3)')+';margin-top:3px;font-style:italic">&ldquo;'+l.desc+'&rdquo;</div>'
+      +'</div>';
+  }
+  row.innerHTML=out;
+}
+
+function updateProfileInfo(){
+  var GLAB={w:'Weiblich',m:'Männlich',d:'Divers'};
+  document.getElementById('piName').textContent=S.name||'—';
+  document.getElementById('piAge').textContent=S.age+' Jahre';
+  document.getElementById('piGender').textContent=GLAB[S.gender]||'—';
+  var L=getSkillLevel(),lev=getLevel(L);
+  document.getElementById('piLevel').textContent=lev?lev.icon+' '+lev.title:'—';
+  
+}
+
+// ═══════════════════════════════════════════
+// MATH
+// ═══════════════════════════════════════════
+function wt(g,ver,res){return Math.exp(S.k*g)*(F_VER[ver]||1.00)*(F_RES[res]||1.00);}
+
+function ageFactor(age){
+  if(age<14)return 0.55;if(age<25)return 0.55+(age-14)/11*0.37;
+  if(age<42)return 0.92+(age-25)/17*0.08;if(age<60)return 1.00-(age-42)*0.0085;
+  if(age<75)return(1.00-18*0.0085)-(age-60)*0.018;
+  return Math.max(0.30,(1.00-18*0.0085)-15*0.018-(age-75)*0.030);
+}
+
+function getSkillLevel(){
+  var r=S.sessions.slice(-S.n);
+  // Weighted skill metric: Flash-Level × 0.2 + Work-Level × 0.5 + Project-Level × 0.3
+  // Based on climbing performance research (Rowland 2022, PRG):
+  //   Flash grade = comfort zone, Work grade = development zone, Project = current ceiling
+  // Need at least 3 sessions with topped boulders for calculated level
+  var flashGrades=[], workGrades=[], projectGrades=[];
+  for(var i=0;i<r.length;i++){
+    var sess=r[i];
+    if(!sess.boulders)continue;
+    for(var j=0;j<sess.boulders.length;j++){
+      var b=sess.boulders[j];
+      if(b.res!=='top')continue;
+      if(b.ver==='1')flashGrades.push(b.g);           // Flash
+      else if(b.ver==='low')workGrades.push(b.g);     // 2-5 attempts (Wenige)
+      if(b.g>0)projectGrades.push(b.g);               // all tops for project ceiling
+    }
+  }
+  var hasEnoughData=(flashGrades.length+workGrades.length+projectGrades.length)>=5;
+  if(!hasEnoughData){
+    var self=null;for(var k=0;k<SELF_LEVELS.length;k++){if(SELF_LEVELS[k].key===S.selfLevel){self=SELF_LEVELS[k];break;}}
+    return self?self.grade:3.0;
+  }
+  var avg=function(arr){return arr.length?arr.reduce(function(a,b){return a+b;},0)/arr.length:null;};
+  var max=function(arr){return arr.length?Math.max.apply(null,arr):null;};
+  var fL=avg(flashGrades)||avg(workGrades)||3.0;
+  var wL=avg(workGrades)||avg(flashGrades)||fL;
+  var pL=max(projectGrades)||wL;
+  // Weight: Work zone most important (0.5), Project ceiling (0.3), Flash comfort (0.2)
+  return fL*0.2 + wL*0.5 + pL*0.3;
+}
+
+function getLevel(L){
+  return LEVELS.find(function(lv){return L>=lv.min&&L<lv.max;})||LEVELS[0];
+}
+
+function getBaseline(){
+  var r=S.sessions.slice(-S.n);
+  return r.length?r.reduce(function(s,x){return s+x.rawScore;},0)/r.length:null;
+}
+
+function effFactor(L){return 1+0.3*(1-L/8);}
+
+function calcBPU(){
+  if(!S.boulders.length)return null;
+  var sRaw=S.boulders.reduce(function(s,b){return s+wt(b.g,b.ver,b.res);},0);
+  var baseline=getBaseline()||sRaw;
+  var L=getSkillLevel(),fe=effFactor(L),fa=ageFactor(S.age),fg=GF[S.gender],fd=DURF[S.dur];
+  return{bpu:(sRaw/baseline)*fe*fa*fg*fd*100,sRaw:sRaw,baseline:baseline,fe:fe,fa:fa,fg:fg,fd:fd,L:L};
+}
+
+// ═══════════════════════════════════════════
+// RECALC
+// ═══════════════════════════════════════════
+function recalc(){
+  var L=getSkillLevel(),fe=effFactor(L),fa=ageFactor(S.age);
+  var lev=getLevel(L);
+  var scol=lev?lev.color:'var(--lim)';
+
+  // Skill display
+  document.getElementById('skillFill').style.width=Math.min((L/8)*100,100)+'%';
+  document.getElementById('skillFill').style.background=scol;
+  document.getElementById('skillName').textContent=(lev?lev.icon+' '+lev.title:'—')+' · Ø Grad '+L.toFixed(1);
+  document.getElementById('skillFeff').textContent='F_eff '+fe.toFixed(3);
+
+  // Check if we have enough data (5+ tops across sessions)
+  var allBoulderCount=0;
+  for(var si=0;si<S.sessions.slice(-S.n).length;si++){var ss=S.sessions.slice(-S.n)[si];if(ss.boulders)allBoulderCount+=ss.boulders.filter(function(b){return b.res==='top';}).length;}
+  var hasEnoughData=allBoulderCount>=5;
+  var insightEl=document.getElementById('skillInsight');
+  if(hasEnoughData){
+    insightEl.innerHTML='<strong>Kletterökonomie:</strong> Auf deinem Level arbeitest du für denselben Grad <strong>'+((fe-1)*100).toFixed(1)+'%</strong> näher am physiologischen Limit als ein Elite-Kletterer. Dein Level basiert auf Arbeitsbereich & Projekten — leichte Flashes zählen kaum.';
+  }else{
+    var needed=Math.max(0,5-allBoulderCount);
+    insightEl.innerHTML='Noch <strong>'+needed+' Tops</strong> bis zum automatischen Level-Tracking. Bis dahin gilt deine Selbsteinschätzung im Profil.';
+  }
+
+  // Factor cells
+  document.getElementById('fEff').textContent=fe.toFixed(3);
+  document.getElementById('fAge').textContent=fa.toFixed(3);
+  document.getElementById('fGen').textContent=GF[S.gender].toFixed(2);
+  document.getElementById('fDur').textContent=DURF[S.dur].toFixed(2);
+
+  var r=calcBPU();
+  if(!r){
+    var sn=document.getElementById('scoreNum');sn.textContent='—';sn.className='snum dim';sn.style.color='';
+    document.getElementById('scoreZone').textContent='';
+    document.getElementById('ringArc').style.strokeDashoffset=396;
+    document.getElementById('ringArc').style.stroke='#d4f54c';
+    document.getElementById('fRaw').textContent='—';
+    document.getElementById('formulaBox').innerHTML='BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100';
+    document.getElementById('sessionMsg').classList.remove('show');
+    updateSaveBtn();drawAgeCurve();return;
+  }
+
+  var rounded=Math.round(r.bpu),col,zone,msgKey;
+  if(r.bpu<80){col='#40c898';zone='Leichter Tag · Erholung';msgKey='low';}
+  else if(r.bpu<110){col='#d4f54c';zone='Voll im Bereich';msgKey='normal';}
+  else if(r.bpu<130){col='#f0a832';zone='Überdurchschnittlich!';msgKey='strong';}
+  else{col='#f05050';zone='Bestleistung!';msgKey='beast';}
+
+  var sn=document.getElementById('scoreNum');sn.textContent=rounded;sn.className='snum';sn.style.color=col;
+  document.getElementById('scoreZone').textContent=zone;document.getElementById('scoreZone').style.color=col;
+  var arc=document.getElementById('ringArc');
+  arc.style.strokeDashoffset=396*(1-Math.min(r.bpu/150,1));arc.style.stroke=col;
+  document.getElementById('fRaw').textContent=r.sRaw.toFixed(1);
+  document.getElementById('formulaBox').innerHTML='BPU = ('+r.sRaw.toFixed(1)+' / '+r.baseline.toFixed(1)+') · <strong>'+r.fe.toFixed(3)+'</strong> · <strong>'+r.fa.toFixed(3)+'</strong> · <strong>'+r.fg.toFixed(2)+'</strong> · <strong>'+r.fd.toFixed(2)+'</strong> · 100 = <strong>'+rounded+'</strong>';
+
+  // Motivational message
+  var msgs=MSGS[msgKey]||MSGS.normal;
+  var msg=msgs[Math.floor(Math.random()*msgs.length)];
+  document.getElementById('sessionMsg').innerHTML='<strong>'+zone+'</strong> — '+msg;
+  document.getElementById('sessionMsg').classList.add('show');
+
+  updateSaveBtn();drawAgeCurve();
+}
+
+function updateSaveBtn(){
+  var btn=document.getElementById('saveBtn');
+  if(S.boulders.length){btn.className='save-btn ready';btn.textContent='Session speichern ('+S.boulders.length+' Boulder)';}
+  else{btn.className='save-btn';btn.textContent='Session speichern';}
+}
+
+// ═══════════════════════════════════════════
+// INPUT
+// ═══════════════════════════════════════════
+function pickGrade(g){
+  curGrade=g;
+  document.querySelectorAll('.gbtn').forEach(function(b){b.classList.toggle('sel',+b.dataset.g===g);});
+  document.getElementById('selGradeLbl').textContent=g;
+  document.getElementById('addBtn').disabled=false;
+}
+function pickVer(v){curVer=v;document.querySelectorAll('.abtn[data-v]').forEach(function(b){b.classList.toggle('active',b.dataset.v===v);});}
+function pickRes(r){curRes=r;document.querySelectorAll('.abtn[data-r]').forEach(function(b){b.classList.toggle('active',b.dataset.r===r);});}
+
+function addBoulder(){
+  if(!curGrade)return;S.boulders.push({g:curGrade,ver:curVer,res:curRes});
+  renderBoulders();recalc();
+  if(navigator.vibrate)navigator.vibrate(18);
+  var label='Grad '+curGrade+(curVer==='1'?' · Flash':'')+(curRes==='fail'?' · Kein Top':'');
+  showToast(label+' — hinzugefügt!');
+}
+function removeBoulder(i){S.boulders.splice(i,1);renderBoulders();recalc();}
+function clearBoulders(){S.boulders=[];renderBoulders();recalc();}
+
+function renderBoulders(){
+  var card=document.getElementById('bListCard'),list=document.getElementById('bList');
+  if(!S.boulders.length){card.style.display='none';return;}
+  card.style.display='block';
+  var topped=S.boulders.filter(function(b){return b.res==='top';}).length;
+  var failed=S.boulders.filter(function(b){return b.res==='fail';}).length;
+  document.getElementById('bCount').textContent=topped+' Tops'+(failed?' · '+failed+'✗':'');
+  list.innerHTML=S.boulders.map(function(b,i){
+    var col=GCOL[b.g-1],pts=wt(b.g,b.ver,b.res),isFail=b.res==='fail',isFlash=b.ver==='1';
+    var tags='';if(isFlash)tags+='<span class="tag tag-flash">FLASH</span>';if(isFail)tags+='<span class="tag tag-fail">KEIN TOP</span>';
+    return '<div class="bitem'+(isFail?' fail-item':'')+'"><div class="bdot" style="background:'+col+'22;border:1px solid '+col+'60;color:'+col+'">'+b.g+'</div>'
+      +'<div class="binfo"><div class="bimain">Grad '+b.g+tags+'</div><div class="bisub">'+VER_L[b.ver]+(isFail?' · Kein Top':'')+'</div></div>'
+      +'<div class="bpts">'+(isFail?'±':'+')+pts.toFixed(1)+'</div>'
+      +'<button class="brm" onclick="removeBoulder('+i+')">×</button></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// SAVE SESSION
+// ═══════════════════════════════════════════
+function saveSession(){
+  if(!S.boulders.length){showToast('Erst ein paar Boulder hinzufügen!');return;}
+  var r=calcBPU();if(!r)return;
+  var topped=S.boulders.filter(function(b){return b.res==='top';});
+  var avgG=topped.length?parseFloat((topped.reduce(function(s,b){return s+b.g;},0)/topped.length).toFixed(1)):null;
+  var now=new Date();
+  var sess={id:Date.now(),bpu:Math.round(r.bpu),rawScore:r.sRaw,avgGrade:avgG,
+    count:S.boulders.length,topped:topped.length,failed:S.boulders.filter(function(b){return b.res==='fail';}).length,
+    dur:S.dur,boulders:S.boulders.slice(),dateMs:now.getTime(),
+    date:now.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit',year:'2-digit'})};
+  var prevBest=S.sessions.length?Math.max.apply(null,S.sessions.map(function(s){return s.bpu;})):0;
+  S.sessions.push(sess);
+  persistActive();renderBoulders();recalc();
+  var msg='Session gespeichert — BPU '+Math.round(r.bpu);
+  if(sess.bpu>prevBest&&prevBest>0)msg='🏆 Neuer Rekord! BPU '+Math.round(r.bpu);
+  showToast(msg);
+  setTimeout(function(){showPage('history');},700);
+}
+
+// ═══════════════════════════════════════════
+// HISTORY + GAMIFICATION
+// ═══════════════════════════════════════════
+function deleteSession(id){
+  if(!confirm('Diese Session löschen?'))return;
+  S.sessions=S.sessions.filter(function(s){return s.id!==id;});
+  persistActive();renderHistory();recalc();showToast('Session gelöscht');
+}
+
+function renderHistory(){
+  var bl=getBaseline();
+  document.getElementById('baselineLbl').textContent=bl?'Baseline '+bl.toFixed(0):'';
+
+  var n=S.sessions.length;
+  document.getElementById('stSess').textContent=n||'—';
+
+  if(n){
+    var bpus=S.sessions.map(function(s){return s.bpu;});
+    document.getElementById('stAvg').textContent=Math.round(bpus.reduce(function(a,b){return a+b;},0)/bpus.length);
+    var best=Math.max.apply(null,bpus);
+    document.getElementById('stBest').textContent=best;
+  }else{
+    document.getElementById('stAvg').textContent='—';
+    document.getElementById('stBest').textContent='—';
+  }
+
+  // Level banner
+  var L=getSkillLevel(),lev=getLevel(L);
+  var nextLev=LEVELS[LEVELS.indexOf(lev)+1];
+  var lvBanner=document.getElementById('levelBanner');
+  if(lev){
+    lvBanner.style.display='flex';
+    document.getElementById('levelIcon').textContent=lev.icon;
+    document.getElementById('levelTitle').textContent=lev.title;
+    document.getElementById('levelSub').textContent=lev.sub;
+    document.getElementById('levelProg').style.background=lev.color;
+    if(nextLev){
+      var prog=Math.min((L-lev.min)/(nextLev.min-lev.min)*100,100);
+      document.getElementById('levelProg').style.width=prog.toFixed(0)+'%';
+      document.getElementById('levelProgLbl').textContent='→ '+nextLev.title+' ('+nextLev.icon+')';
+    }else{
+      document.getElementById('levelProg').style.width='100%';
+      document.getElementById('levelProgLbl').textContent='Max Level erreicht 👑';
+    }
+  }else{lvBanner.style.display='none';}
+
+  // Week goal
+  renderWeekDots();
+
+  // Records
+  if(n){
+    document.getElementById('recordsGrid').style.display='grid';
+    var best2=Math.max.apply(null,S.sessions.map(function(s){return s.bpu;}));
+    var lastSess=S.sessions[S.sessions.length-1];
+    var isNewBest=lastSess&&lastSess.bpu>=best2&&n>1;
+    document.getElementById('recBestBPU').innerHTML=best2+(isNewBest?'<span class="rec-new">NEU</span>':'');
+    var now=Date.now(),monthMs=30*24*60*60*1000;
+    var monthly=S.sessions.filter(function(s){return now-s.dateMs<monthMs;}).length;
+    document.getElementById('recStreak').textContent=monthly;
+    var allTops=S.sessions.reduce(function(s,x){return s+(x.topped||0);},0);
+    document.getElementById('recTops').textContent=allTops;
+    var allGrades=S.sessions.filter(function(s){return s.avgGrade;}).map(function(s){return s.avgGrade;});
+    document.getElementById('recBestGrade').textContent=allGrades.length?Math.max.apply(null,allGrades):'—';
+  }else{document.getElementById('recordsGrid').style.display='none';}
+
+  // Session list
+  var DURL={short:'< 1h',mid:'1–3h',long:'> 3h'};
+  var list=document.getElementById('sessionList');
+  if(!n){
+    list.innerHTML='<div class="empty"><div class="empty-icon">🦍</div>Noch keine Sessions.<br>Rauf auf die Wand und losgelegt!</div>';
+    drawHistCanvas();return;
+  }
+  list.innerHTML=S.sessions.slice().reverse().map(function(s){
+    var col,zone;
+    if(s.bpu<80){col='#40c898';zone='Erholung';}else if(s.bpu<110){col='#d4f54c';zone='Normal';}
+    else if(s.bpu<130){col='#f0a832';zone='Stark';}else{col='#f05050';zone='Rekord';}
+    return '<div class="sitem"><div class="sbpu" style="color:'+col+'">'+s.bpu+'</div>'
+      +'<div class="sinfo"><div class="sdate">'+s.date+'</div>'
+      +'<div class="sdetail">'+s.topped+' Tops'+(s.failed?' · '+s.failed+'✗':'')+' · '+(s.avgGrade||'—')+' · '+DURL[s.dur]+'</div></div>'
+      +'<span class="szone" style="background:'+col+'18;color:'+col+'">'+zone+'</span>'
+      +'<button class="s-del" onclick="deleteSession('+s.id+')">×</button></div>';
+  }).join('');
+  drawHistCanvas();
+}
+
+function renderWeekDots(){
+  var weekCard=document.getElementById('weekCard');
+  var now=new Date(),dow=now.getDay();
+  var weekStart=new Date(now);weekStart.setDate(now.getDate()-(dow===0?6:dow-1));weekStart.setHours(0,0,0,0);
+  var dots=[];
+  for(var d=0;d<7;d++){
+    var day=new Date(weekStart);day.setDate(weekStart.getDate()+d);
+    var dayMs=day.getTime(),nextMs=dayMs+86400000;
+    var trained=S.sessions.some(function(s){return s.dateMs>=dayMs&&s.dateMs<nextMs;});
+    var isToday=d===(dow===0?6:dow-1);
+    dots.push({trained:trained,isToday:isToday,day:['Mo','Di','Mi','Do','Fr','Sa','So'][d]});
+  }
+  var trained=dots.filter(function(d){return d.trained;}).length;
+  weekCard.style.display='block';
+  document.getElementById('weekTitle').textContent='Diese Woche: '+trained+' von 7 Tagen trainiert '+
+    (trained>=4?'💪':trained>=2?'👍':'— ran an die Wand!');
+  document.getElementById('weekDots').innerHTML=dots.map(function(d){
+    var cls='week-dot'+(d.trained?' done':d.isToday?' today':'');
+    return '<div class="'+cls+'" title="'+d.day+'"></div>';
+  }).join('');
+}
+
+function drawHistCanvas(){
+  var c=document.getElementById('histCanvas');if(!c)return;
+  var dpr=window.devicePixelRatio||1,W=c.offsetWidth||300,H=80;
+  c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+  var ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  var sess=S.sessions.slice(-24);if(!sess.length)return;
+  var bl=getBaseline(),maxV=Math.max.apply(null,sess.map(function(s){return s.bpu;}).concat([130]));
+  var bw=(W-8)/sess.length-4;
+  sess.forEach(function(s,i){
+    var x=4+i*(bw+4),h=Math.max((s.bpu/maxV)*(H-18),3),y=H-14-h;
+    var col=s.bpu>=130?'#f05050':s.bpu>=110?'#f0a832':s.bpu>=80?'#d4f54c':'#40c898';
+    ctx.fillStyle=col+'66';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,bw,h,2);else ctx.rect(x,y,bw,h);ctx.fill();
+    ctx.fillStyle='rgba(200,200,200,0.35)';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText(s.bpu,x+bw/2,H-2);
+  });
+  if(bl){var by=H-14-(bl/maxV)*(H-18);ctx.strokeStyle='rgba(212,245,76,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);}
+}
+
+// ═══════════════════════════════════════════
+// AGE CURVE
+// ═══════════════════════════════════════════
+function drawAgeCurve(){
+  var c=document.getElementById('ageCanvas');if(!c||!c.offsetWidth)return;
+  var dpr=window.devicePixelRatio||1,W=c.offsetWidth,H=68;
+  c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+  var ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  var xOf=function(a){return(a-10)/65*W;},yOf=function(v){return H-4-(v-0.3)/0.75*(H-10);};
+  [[10,25,'rgba(64,200,152,0.07)'],[25,42,'rgba(88,168,240,0.07)'],[42,60,'rgba(240,168,50,0.07)'],[60,75,'rgba(232,64,64,0.09)']].forEach(function(z){ctx.fillStyle=z[2];ctx.fillRect(xOf(z[0]),0,xOf(z[1])-xOf(z[0]),H);});
+  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=0.5;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(0,yOf(1));ctx.lineTo(W,yOf(1));ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();for(var a=10;a<=75;a++){var x=xOf(a),y=yOf(ageFactor(a));a===10?ctx.moveTo(x,y):ctx.lineTo(x,y);}
+  ctx.strokeStyle='rgba(212,245,76,0.65)';ctx.lineWidth=1.5;ctx.stroke();
+  var cx=xOf(S.age),cy=yOf(ageFactor(S.age));ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle='#d4f54c';ctx.fill();
+  ctx.fillStyle='rgba(212,245,76,0.6)';ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText(S.age+' J.',Math.min(Math.max(cx,16),W-20),cy>16?cy-8:cy+14);
+}
+
+// ═══════════════════════════════════════════
+// PROFILE SETTERS
+// ═══════════════════════════════════════════
+function setGenderUI(g){['w','m','d'].forEach(function(x){document.getElementById('gb-'+x).classList.toggle('active',x===g);});}
+function setGender(g){S.gender=g;setGenderUI(g);persistActive();recalc();updateProfileInfo();}
+function setDurUI(d){['short','mid','long'].forEach(function(x){document.getElementById('db-'+x).classList.toggle('active',x===d);});}
+function setDur(d){S.dur=d;setDurUI(d);recalc();}
+
+function exportData(){
+  var blob=new Blob([JSON.stringify({profile:S.name,sessions:S.sessions},null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='bpu-'+S.name.replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();showToast('Daten exportiert!');
+}
+function resetProfile(){
+  if(confirm('Alle Sessions von "'+S.name+'" löschen?')){
+    S.sessions=[];persistActive();recalc();renderHistory();showToast('Sessions gelöscht');
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  var idx={session:0,history:1,profile:2,docs:3};
+  if(idx[id]!==undefined)document.querySelectorAll('.nb')[idx[id]].classList.add('active');
+  if(id==='history'){renderHistory();}
+  if(id==='profile'){setTimeout(function(){drawAgeCurve();updateProfileInfo();},60);}
+}
+
+function navToDoc(key){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('page-docs').classList.add('active');
+  document.querySelectorAll('.nb')[3].classList.add('active');
+  openDoc(key);
+}
+function openDoc(key){
+  var doc=DOCS[key];if(!doc)return;
+  document.getElementById('docToc').classList.add('hidden');
+  document.getElementById('docDetail').classList.add('active');
+  document.getElementById('docTitle').textContent=doc.title;
+  document.getElementById('docSub').textContent=doc.sub;
+  document.getElementById('docBody').innerHTML=doc.body;
+  document.getElementById('page-docs').scrollTop=0;
+}
+function closeDoc(){
+  document.getElementById('docToc').classList.remove('hidden');
+  document.getElementById('docDetail').classList.remove('active');
+}
+
+// ═══════════════════════════════════════════
+// DOCS
+// ═══════════════════════════════════════════
+var DOCS={
+  overview:{title:'BPU — Das Modell',sub:'Boulder Performance Unit · Vollständige Formel',body:'<h3>Was ist die BPU?</h3><p>Die Boulder Performance Unit misst wie nah du in einer Session an deinem eigenen Maximum warst — nicht wie gut du im Vergleich zu anderen bist. BPU = 100 heißt: du hast exakt dein übliches Niveau abgerufen.</p><h3>Vollständige Formel</h3><div class="doc-formula">BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100<br><br><span class="c">// S_raw    = Σ e^(k·g) · F_ver · F_res</span><br><span class="c">// Baseline = Gleitender Ø der letzten N Sessions</span><br><span class="c">// F_eff    = 1 + 0.3·(1 − L/8)  (L = dein Level)</span><br><span class="c">// F_alter  = Alterskurve (Peak ~42 J.)</span><br><span class="c">// F_gesch  = w=1.00 / m=0.88 / d=0.94</span><br><span class="c">// F_dauer  = &lt;1h→1.25 / 1–3h→1.00 / &gt;3h→0.85</span></div><h3>Das Kernprinzip</h3><p>Ein höherer Score bedeutet nicht, dass du der bessere Kletterer bist — er bedeutet, dass du heute relativ zu deiner eigenen Norm stärker performt hast.</p><div class="doc-warn">⚠ Das Modell ist eine sportmedizinisch fundierte Approximation. Parameter wie k und α sind Schätzwerte — du kannst sie im Profil anpassen.</div>'},
+  difficulty:{title:'Schwierigkeitsgewichtung',sub:'Exponentieller Basiswert w(g) · k = 0.35',body:'<h3>Warum exponentiell?</h3><p>Die Grade 1–8 sind keine lineare Skala. Der Sprung von 7→8 ist physiologisch viel größer als von 1→2. Ohne Exponentialgewichtung würden schwere Boulder systematisch unterschätzt.</p><h3>Formel</h3><div class="doc-formula">w(g) = e^(k · g)<br><br><span class="c">// k = 0.35 ≈ ln(2)/2 → alle 2 Grade ≈ Verdopplung</span></div><table class="doc-table"><tr><th>Grad</th><th>w(g)</th><th>Faktor</th></tr><tr><td>1 — Warm-up</td><td>1.42</td><td>1×</td></tr><tr><td>3 — Aufbau</td><td>2.86</td><td>2.0×</td></tr><tr><td>5 — Stark</td><td>5.75</td><td>4.1×</td></tr><tr><td>7 — Beastmode</td><td>11.59</td><td>8.2×</td></tr><tr><td>8 — Ape-Level</td><td>16.44</td><td>11.6×</td></tr></table><div class="doc-src">Quelle: Mermier et al. (1997); Baláš et al. (2014); IRCRA Performance Scale</div>'},
+  attempts:{title:'Versuche & Ergebnis',sub:'Zwei-Achsen-Modell · F_ver · F_res',body:'<h3>Zwei unabhängige Dimensionen</h3><p>Versuchsanzahl und Ergebnis (Top oder nicht) fließen getrennt ein. Die Grenze zwischen den Versuchszonen basiert auf der Praxis: 2–5 Versuche bedeuten du verstehst den Boulder grundsätzlich und es klappt — 6+ Versuche bedeuten Projektarbeit mit kumulierter Ermüdung und intensivem Beta-Suchen.</p><h3>F_ver — Anzahl Versuche</h3><div class="doc-formula">Flash (1×)     → × 1.30  <span class="c">// Erstversuch ohne Vorabwissen</span><br>Wenige (2–5×)  → × 1.00  <span class="c">// Verstanden, gekonnt</span><br>Projekt (6–20×)→ × 0.80  <span class="c">// Projektarbeit, Ermüdung</span></div><h3>F_res — Ergebnis</h3><div class="doc-formula">Top geschafft → × 1.00<br>Kein Top      → × 0.60  <span class="c">// Anstrengung ohne Abschluss</span></div><h3>Kombinierte Faktoren</h3><table class="doc-table"><tr><th>Situation</th><th>F_ver × F_res</th><th>Gesamt</th></tr><tr><td>Flash, Top</td><td>1.30 × 1.00</td><td>1.30</td></tr><tr><td>2–5×, Top</td><td>1.00 × 1.00</td><td>1.00</td></tr><tr><td>6–20×, Top</td><td>0.80 × 1.00</td><td>0.80</td></tr><tr><td>1×, Kein Top</td><td>1.30 × 0.60</td><td>0.78</td></tr><tr><td>2–5×, Kein Top</td><td>1.00 × 0.60</td><td>0.60</td></tr><tr><td>6–20×, Kein Top</td><td>0.80 × 0.60</td><td>0.48</td></tr></table><h3>Warum 5/6 als Grenze?</h3><p>Mini-Projekte werden typisch in 2–5 Versuchen abgeschlossen — in diesem Bereich versteht man den Boulder und setzt ihn durch. Ab 6 Versuchen wechselt die Natur: Beta wird iterativ erarbeitet, kumulative Fingerermüdung setzt ein, und der Boulder ist ein echtes Projekt. Diese Grenze spiegelt die Trainingspraxis direkt wider.</p><p>Kein Top → kein Grad für das Level-Tracking. Nur getoppte Boulder fließen in die Könnerstufe ein.</p><div class="doc-src">Quelle: Rock and Sun — Art of Redpointing (2020); Training Beta — Projecting Process (Mirsky); de Geus et al. (2006) Eur J Appl Physiol</div>'},
+  baseline:{title:'Baseline & Level-Tracking',sub:'Gewichtete Könnerstufe · Flash / Work / Project',body:'<h3>Die Baseline</h3><div class="doc-formula">Baseline = (Σ S_raw[i], i=1..N) / N</div><p>Dein gleitender Durchschnitt der letzten N Sessions. Steigt automatisch mit deinem Level.</p><h3>Könnerstufe — gewichtete drei Zonen</h3><p>Ein einfacher Ø-Grad unterschätzt dein Leistungsvermögen, weil leichte Flashes das Bild verzerren. Die Könnerstufe basiert auf drei Zonen mit unterschiedlicher Gewichtung:</p><div class="doc-formula">L = Flash-Zone × 0.2 + Arbeitszone × 0.5 + Projektzone × 0.3<br><br><span class="c">// Flash-Zone  = Ø-Grad aller Flashes (Komfortbereich)</span><br><span class="c">// Arbeitszone = Ø-Grad bei 2–10 Versuchen, Top (Entwicklung)</span><br><span class="c">// Projektzone = höchster getoppter Grad (aktuelles Limit)</span></div><p>Die Forschung zeigt: Dein Consistent Redpoint — der Grad den du nach mehreren Versuchen zuverlässig toppst — ist der aussagekräftigste Leistungsindikator. Flash-Routen liegen typisch 1–3 Grade darunter und sagen wenig über dein Limit aus.</p><h3>Wahl von N</h3><table class="doc-table"><tr><th>N</th><th>Eigenschaften</th></tr><tr><td>3–5</td><td>Reaktiv, volatil</td></tr><tr><td>8–12</td><td>Ausgewogen (Empfehlung)</td></tr><tr><td>15–20</td><td>Stabil, träge</td></tr></table><div class="doc-src">Quelle: Rowland (2022) PRG Climbing School; Climbstat analysis 8a.nu dataset (2020)</div>'},
+  eff:{title:'Kletterökonomie',sub:'Effizienzfaktor F_eff · α = 0.30',body:'<h3>Das Problem</h3><p>Anfänger und Pros können denselben Grad klettern — der Anfänger arbeitet dabei physiologisch viel näher am Maximum. Schlechte Technik erzeugt ineffiziente Griffkraft und höhere Herzfrequenz für denselben Move.</p><h3>Formel</h3><div class="doc-formula">F_eff = 1 + 0.3 · (1 − L/8)<br><br><span class="c">// L=2 → F_eff=1.225 (+22.5%)</span><br><span class="c">// L=5 → F_eff=1.113 (+11.3%)</span><br><span class="c">// L=8 → F_eff=1.000</span></div><p>Das macht BPU fair vergleichbar: gleiche relative Anstrengung = gleicher Score — egal auf welchem Niveau.</p><div class="doc-src">Quelle: CAMP4 Wearable Sensors (2025); Philippe et al. (2019)</div>'},
+  age:{title:'Altersfaktor F_alter',sub:'Peak ~42 Jahre · Asymmetrische Kurve',body:'<h3>Klettern peaked spät</h3><p>Anders als in reinen Kraftsportarten (~28 J.) liegt der Leistungspeak beim Klettern bei ~42 Jahren. Akkumulierte Bewegungserfahrung kompensiert den physiologischen Rückgang.</p><table class="doc-table"><tr><th>Phase</th><th>Alter</th><th>Verlauf</th></tr><tr><td>Aufbau</td><td>10–25 J.</td><td>Ramp-up</td></tr><tr><td>Plateau</td><td>25–42 J.</td><td>Langsam +</td></tr><tr><td>Abbau</td><td>42–60 J.</td><td>–0.85%/Jahr</td></tr><tr><td>Beschleunigt</td><td>60+ J.</td><td>–1.8%/Jahr</td></tr></table><div class="doc-src">Quelle: Akkari et al. (2015); BYU Masters (2024); Ring (2022) 8a.nu</div>'},
+  gender:{title:'Geschlechtsnormierung',sub:'F_geschlecht · Fingerkraft-Normwerte',body:'<h3>Faktoren</h3><div class="doc-formula">Weiblich → 1.00  <span class="c">(Referenz)</span><br>Männlich → 0.88<br>Divers   → 0.94</div><p>Frauen werden als Referenz gesetzt, weil sie im Verhältnis Fingerkraft/Körpergewicht auf vergleichbaren Graden prozentual näher an ihrer maximalen Kapazität arbeiten. Die Normierung sorgt für gleichen BPU bei gleicher relativer Anstrengung.</p><div class="doc-warn">Hinweis: Bei Elite-Kletterern sind die Geschlechtsunterschiede deutlich geringer. Die Normierung ist primär für mittleres Niveau relevant.</div><div class="doc-src">Quelle: España-Romero et al. (2009); IRCRA (2021)</div>'},
+  duration:{title:'Session-Dauer F_dauer',sub:'Neutrale Normierung · Referenz 1–3h',body:'<h3>Kein Bonus, kein Malus</h3><div class="doc-formula">F_dauer(&lt;1h)  = 1.25<br>F_dauer(1–3h) = 1.00<br>F_dauer(&gt;3h)  = 0.85</div><p>Sessions unterschiedlicher Länge werden vergleichbar gemacht — nicht bestraft oder belohnt. Eine kurze intensive Session mit gleichem S_raw ist physiologisch wertvoller als eine lange extensive.</p><div class="doc-src">Quelle: Draper et al. (2010)</div>'},
+
+  levels:{title:'Level-System & Selbsteinschätzung',sub:'8 Stufen vom Faultier bis Ape King',body:'<h3>Die 8 Level</h3><p>Das Level-System bildet die Kletterprogression in 8 Stufen ab — von der ersten Begegnung mit der Wand bis zum Elite-Niveau. Es dient zwei Zwecken: als Gamification-Element und als Grundlage für die Könnerstufen-Berechnung.</p><table class="doc-table"><tr><th>Tier</th><th>Level</th><th>Grad</th><th>Charakteristik</th></tr><tr><td>🦥</td><td>Faultier</td><td>Grad 1</td><td>Einstieg, große Griffe und Tritte, Basistechnik im Aufbau</td></tr><tr><td>🐇</td><td>Hase</td><td>Grad 1–2</td><td>Grundbewegungen sitzen, erste mittlere Routen</td></tr><tr><td>🐈</td><td>Katze</td><td>Grad 2–3</td><td>Körperspannung entwickelt sich, kleine Tritte werden sicherer</td></tr><tr><td>🐆</td><td>Leopard</td><td>Grad 3–4</td><td>Solide Technik, Einstieg in den Projektbereich</td></tr><tr><td>🐒</td><td>Schimpanse</td><td>Grad 4–5</td><td>Starke Finger, dynamische Moves, gutes Routenlesen</td></tr><tr><td>🦧</td><td>Orang-Utan</td><td>Grad 5–6</td><td>Konsistenz auf hohem Niveau, Grad-6-Projekte</td></tr><tr><td>🦍</td><td>Gorilla</td><td>Grad 6–7</td><td>Maximale Kraft und Technik, flasht was andere projektieren</td></tr><tr><td>👑</td><td>Ape King</td><td>Grad 7–8</td><td>Elite-Niveau, oberes Ende der Hallenskala konsistent</td></tr></table><h3>Berechnung vs. Selbsteinschätzung</h3><p>Ab 5 getoppten Bouldern aus den letzten N Sessions wird das Level automatisch berechnet — gewichtet nach Flash-Zone (×0.2), Arbeitszone (×0.5) und Projektzone (×0.3). Bis dahin gilt die Selbsteinschätzung im Profil als Startwert für die BPU-Kalibrierung.</p><h3>Warum Tiere?</h3><p>Die Tier-Progression ist intuitiv und motivierend: vom langsamen Faultier zum kraftvollen Gorilla. Jedes Tier steht für eine klar erkennbare Kletterstufe — ohne Wertung, mit Humor.</p><div class="doc-src">Quelle: Fontainebleau-Skala Gradcharakteristiken; Baláš et al. (2014) Climbing performance determinants</div>'},
+    interpretation:{title:'Score lesen',sub:'BPU-Zonen · Vergleich · Grenzen',body:'<h3>Die Zonen</h3><table class="doc-table"><tr><th>BPU</th><th>Zone</th><th>Bedeutung</th></tr><tr><td>&lt; 80</td><td>Erholung</td><td>Leichter Tag — auch das ist Training</td></tr><tr><td>80–110</td><td>Voll im Bereich</td><td>Solide Trainingseinheit</td></tr><tr><td>110–130</td><td>Überdurchschnittlich</td><td>Du hast dich heute übertroffen</td></tr><tr><td>&gt; 130</td><td>Bestleistung!</td><td>Historischer Tag</td></tr></table><h3>Kein hartes Maximum bei 100</h3><p>BPU ist nach oben offen. 100 = deine Norm. Darüber = besser als üblich. Der Ring ist auf 150 kalibriert — bei 100 BPU ist er zwei Drittel voll.</p><h3>BPU vergleicht dich mit dir selbst</h3><p>Ein Frischling mit BPU 130 hat heute außergewöhnlich gebouldert. Ein Ape King mit BPU 90 hatte einen normalen Tag. Das absolute Niveau spielt keine Rolle — nur deine relative Leistung.</p><div class="doc-warn">Nicht berücksichtigt: Schlaf, Ernährung, Stress, Verletzungen, Hallencharakter. Das Modell gibt eine fundierte Orientierung — kein exaktes physiologisches Messgerät.</div>'}
+};
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+var _tt;
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show');},2400);}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function finishOnboard(){
+  var name=document.getElementById('onboardInput').value.trim();
+  if(!name)return;
+  // Rename the default profile with the entered name
+  var list=loadProfiles();
+  var aid=getAID();
+  var idx=list.findIndex(function(p){return p.id===aid;});
+  if(idx>=0){list[idx].name=name;saveProfiles(list);}
+  try{try{localStorage.setItem('bpu5_onboarded','1');}catch(e){}}catch(e){}
+  document.getElementById('onboard').style.display='none';
+  loadActive();
+  showToast('Hey ' + name + ' — ab auf die Wand!');
+}
+
+function checkOnboard(){
+  // Show onboard only when: no real name has been set yet
+  // "Mein Profil" = placeholder = never personalized
+  // If user already has sessions = they used the app = skip onboard
+  var isPlaceholder = (S.name==='Mein Profil' || S.name==='' || !S.name);
+  var hasUsedApp = S.sessions && S.sessions.length > 0;
+  var alreadyNamed = false;
+  try{alreadyNamed = !!localStorage.getItem('bpu5_onboarded');}catch(e){}
+  if(isPlaceholder && !hasUsedApp && !alreadyNamed){
+    document.getElementById('onboard').style.display='flex';
+    setTimeout(function(){
+      var inp=document.getElementById('onboardInput');
+      if(inp)inp.focus();
+    },400);
+  }else if(!isPlaceholder){
+    // Name was already set (existing users) — mark as onboarded silently
+    try{localStorage.setItem('bpu5_onboarded','1');}catch(e){}
+  }
+}
+
+function init(){
+  loadActive();
+  checkOnboard();
+  window.addEventListener('resize',function(){drawAgeCurve();drawHistCanvas();});
+}
+init();
+</script>
+</body>
+</html>
