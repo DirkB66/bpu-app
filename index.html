@@ -60,7 +60,15 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 
 /* SCORE RING */
 .score-wrap{display:flex;flex-direction:column;align-items:center;padding:12px 0 8px;}
-.ring-outer{position:relative;width:148px;height:148px;margin-bottom:8px;}
+.dual-ring-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;}
+.ring-outer{position:relative;width:148px;height:148px;}
+.ring-outer-sm{position:relative;width:110px;height:110px;}
+.ring-outer-sm svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.ring-inner-sm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.snum-sm{font-size:26px;font-weight:700;line-height:1;color:#d4f54c;transition:color .3s;letter-spacing:-.01em;}
+.snum-sm.dim{color:var(--txt3);font-size:18px;font-weight:400;}
+.slbl-sm{font-size:8px;color:var(--txt3);letter-spacing:.1em;margin-top:2px;text-transform:uppercase;}
+.ring-divider{width:1px;height:60px;background:var(--ln2);flex-shrink:0;}
 .ring-outer svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
 .ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .snum{font-size:58px;font-weight:700;line-height:1;color:var(--lim);transition:color .3s;letter-spacing:-.02em;}
@@ -306,6 +314,25 @@ input[type=number]::placeholder,input[type=text]::placeholder{color:var(--txt3);
 .onboard-btn.ready{opacity:1;pointer-events:auto;}
 .onboard-btn:active{background:#b8d83a;transform:scale(0.98);}
 .onboard-hint{font-size:11px;color:#333;font-family:monospace;letter-spacing:.06em;}
+.load-more-btn{width:100%;padding:13px;text-align:center;font-size:13px;color:var(--txt2);background:var(--bg2);border:1px solid var(--ln);border-radius:14px;cursor:pointer;transition:all .12s;font-family:inherit;}
+.load-more-btn:active{background:var(--bg3);}
+.storage-warn{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:rgba(240,168,50,0.08);border:1px solid rgba(240,168,50,0.2);border-radius:14px;font-size:12px;color:var(--amb);line-height:1.6;}
+.storage-warn strong{color:var(--amb);font-weight:600;}
+.storage-warn-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.sw-btn{padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;border:1px solid rgba(240,168,50,0.3);background:none;color:var(--amb);font-family:inherit;transition:all .12s;}
+.sw-btn:active{background:rgba(240,168,50,0.1);}
+.acc-section{border:1px solid var(--ln);border-radius:14px;overflow:hidden;background:var(--bg2);}
+.acc-section+.acc-section{margin-top:8px;}
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;transition:background .12s;user-select:none;-webkit-user-select:none;}
+.acc-header:active{background:var(--bg3);}
+.acc-header-left{display:flex;flex-direction:column;gap:2px;}
+.acc-title{font-size:14px;font-weight:600;}
+.acc-summary{font-size:11px;color:var(--txt3);font-family:'Courier New',monospace;}
+.acc-chevron{font-size:14px;color:var(--txt3);transition:transform .2s;flex-shrink:0;}
+.acc-chevron.open{transform:rotate(180deg);}
+.acc-body{display:none;padding:0 16px 16px;}
+.acc-body.open{display:block;}
+.acc-divider{height:1px;background:var(--ln);margin:0 16px;}
 .toast{position:fixed;bottom:calc(var(--nav) + var(--sab) + 10px);left:50%;transform:translateX(-50%);background:var(--txt);color:var(--bg);font-size:12px;padding:9px 16px;border-radius:20px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:999;font-family:'Courier New',monospace;}
 .toast.show{opacity:1;}
 canvas{display:block;}
@@ -357,14 +384,30 @@ canvas{display:block;}
 <div class="page active" id="page-session">
   <div class="card card-lime">
     <div class="score-wrap">
-      <div class="ring-outer">
-        <svg viewBox="0 0 148 148" width="148" height="148">
-          <circle cx="74" cy="74" r="63" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="7"/>
-          <circle id="ringArc" cx="74" cy="74" r="63" fill="none" stroke="#d4f54c" stroke-width="7" stroke-linecap="round" stroke-dasharray="396" stroke-dashoffset="396" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
-        </svg>
-        <div class="ring-inner">
-          <div class="snum dim" id="scoreNum">—</div>
-          <div class="slbl">BPU</div>
+      <div class="dual-ring-wrap">
+        <!-- BPU Ring (large) -->
+        <div class="ring-outer">
+          <svg viewBox="0 0 148 148" width="148" height="148">
+            <circle cx="74" cy="74" r="63" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="7"/>
+            <circle id="ringArc" cx="74" cy="74" r="63" fill="none" stroke="#d4f54c" stroke-width="7" stroke-linecap="round" stroke-dasharray="396" stroke-dashoffset="396" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
+          </svg>
+          <div class="ring-inner">
+            <div class="snum dim" id="scoreNum">—</div>
+            <div class="slbl">BPU</div>
+          </div>
+        </div>
+        <!-- Divider -->
+        <div class="ring-divider"></div>
+        <!-- Level Ring (small) -->
+        <div class="ring-outer-sm">
+          <svg viewBox="0 0 110 110" width="110" height="110">
+            <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="6"/>
+            <circle id="levelArc" cx="55" cy="55" r="46" fill="none" stroke="#d4f54c" stroke-width="6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
+          </svg>
+          <div class="ring-inner-sm">
+            <div class="snum-sm dim" id="levelNum">—</div>
+            <div class="slbl-sm" id="levelLbl">Level</div>
+          </div>
         </div>
       </div>
       <div class="szone" id="scoreZone"></div>
@@ -472,12 +515,12 @@ canvas{display:block;}
     <div class="rec-cell"><div class="rec-val" id="recBestBPU">—</div><div class="rec-lbl">Beste Session</div></div>
     <div class="rec-cell"><div class="rec-val" id="recStreak">—</div><div class="rec-lbl">Sessions/Monat</div></div>
     <div class="rec-cell"><div class="rec-val" id="recTops">—</div><div class="rec-lbl">Tops gesamt</div></div>
-    <div class="rec-cell"><div class="rec-val" id="recBestGrade">—</div><div class="rec-lbl">Bester Grad</div></div>
+    <div class="rec-cell"><div class="rec-val" id="recBestGrade">—</div><div class="rec-lbl">Mein Level</div></div>
   </div>
 
   <div class="card">
     <div class="ctitle">Verlauf <span id="baselineLbl" style="color:var(--lim);font-size:10px;font-family:'Courier New',monospace"></span></div>
-    <canvas id="histCanvas" height="80" style="width:100%"></canvas>
+    <canvas id="histCanvas" height="90" style="width:100%"></canvas>
   </div>
 
   <div class="slist" id="sessionList">
@@ -488,7 +531,7 @@ canvas{display:block;}
 <!-- PROFILE PAGE -->
 <div class="page" id="page-profile">
 
-  <!-- Profile info summary -->
+  <!-- Profile summary — always visible -->
   <div class="card">
     <div class="ctitle">Mein Profil</div>
     <div class="profile-info-box" id="profileInfoBox">
@@ -499,68 +542,101 @@ canvas{display:block;}
     </div>
   </div>
 
-  <div class="card">
-    <div class="ctitle">Profil bearbeiten</div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-
-      <div class="pfield">
-        <div class="plabel">Name</div>
-        <input type="text" id="profileNameInput" placeholder="Dein Name" maxlength="24"
-          oninput="saveProfileName()" style="width:100%">
-        <div style="font-size:11px;color:var(--txt3);margin-top:4px">Änderung wird sofort gespeichert.</div>
+  <!-- Accordion: Persönliche Angaben -->
+  <div class="acc-section">
+    <div class="acc-header" onclick="toggleAcc('acc-personal')">
+      <div class="acc-header-left">
+        <span class="acc-title">Persönliche Angaben</span>
+        <span class="acc-summary" id="acc-personal-summary">Name · Geschlecht · Alter</span>
       </div>
+      <span class="acc-chevron" id="acc-personal-chev">›</span>
+    </div>
+    <div class="acc-body" id="acc-personal">
+      <div style="display:flex;flex-direction:column;gap:12px;padding-top:4px">
 
-      <div class="divider"></div>
-
-      <div class="pfield">
-        <div class="plabel">Geschlecht <span class="plabel-link" onclick="navToDoc('gender')">Details →</span></div>
-        <div class="gender-row">
-          <div class="genbtn" id="gb-w" onclick="setGender('w')">Weiblich</div>
-          <div class="genbtn active" id="gb-m" onclick="setGender('m')">Männlich</div>
-          <div class="genbtn" id="gb-d" onclick="setGender('d')">Divers</div>
+        <div class="pfield">
+          <div class="plabel">Name</div>
+          <input type="text" id="profileNameInput" placeholder="Dein Name" maxlength="24"
+            oninput="saveProfileName()" style="width:100%">
         </div>
-      </div>
 
-      <div class="divider"></div>
+        <div class="divider"></div>
 
-      <div class="pfield">
-        <div class="plabel">Alter <span class="plabel-link" onclick="navToDoc('age')">Details →</span></div>
-        <div class="srow">
-          <input type="range" min="10" max="75" value="30" id="ageSlider" oninput="document.getElementById('ageVal').textContent=this.value+' J.';saveProfile();recalc()">
-          <span class="sval" id="ageVal">30 J.</span>
+        <div class="pfield">
+          <div class="plabel">Geschlecht <span class="plabel-link" onclick="navToDoc('gender')">Details →</span></div>
+          <div class="gender-row">
+            <div class="genbtn" id="gb-w" onclick="setGender('w')">Weiblich</div>
+            <div class="genbtn active" id="gb-m" onclick="setGender('m')">Männlich</div>
+            <div class="genbtn" id="gb-d" onclick="setGender('d')">Divers</div>
+          </div>
         </div>
-        <canvas id="ageCanvas" height="68" style="width:100%;margin-top:8px;border-radius:8px"></canvas>
+
+        <div class="divider"></div>
+
+        <div class="pfield">
+          <div class="plabel">Alter <span class="plabel-link" onclick="navToDoc('age')">Details →</span></div>
+          <div class="srow">
+            <input type="range" min="10" max="75" value="30" id="ageSlider"
+              oninput="document.getElementById('ageVal').textContent=this.value+' J.';saveProfile();recalc()">
+            <span class="sval" id="ageVal">30 J.</span>
+          </div>
+          <canvas id="ageCanvas" height="68" style="width:100%;margin-top:8px;border-radius:8px"></canvas>
+        </div>
+
       </div>
+    </div>
+  </div>
 
-
-
-      <div class="divider"></div>
-
-      <div class="pfield">
-        <div class="plabel">Selbsteinschätzung Level <span class="plabel-link" onclick="navToDoc('eff')">Details →</span></div>
-        <div style="font-size:12px;color:var(--txt2);margin-bottom:8px">Wird als Startwert genutzt bis genug Sessions vorliegen.</div>
+  <!-- Accordion: Selbsteinschätzung Level -->
+  <div class="acc-section">
+    <div class="acc-header" onclick="toggleAcc('acc-level')">
+      <div class="acc-header-left">
+        <span class="acc-title">Selbsteinschätzung Level</span>
+        <span class="acc-summary" id="acc-level-summary">Startwert bis genug Sessions vorliegen</span>
+      </div>
+      <span class="acc-chevron" id="acc-level-chev">›</span>
+    </div>
+    <div class="acc-body" id="acc-level">
+      <div style="padding-top:4px">
+        <div style="font-size:12px;color:var(--txt2);margin-bottom:10px">Wird als Startwert genutzt bis 5 getoppte Boulder aus Sessions vorliegen. <span class="plabel-link" onclick="navToDoc('eff')">Details →</span></div>
         <div class="skill-self-row" id="selfSkillRow" style="flex-direction:column;gap:7px"></div>
       </div>
+    </div>
+  </div>
 
-      <div class="divider"></div>
-
-      <div class="pfield">
-        <div class="plabel">Modellparameter</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt3)">k — Schwierigkeitsskalierung <span class="plabel-link" onclick="navToDoc('difficulty')">→</span></span><span class="sval" style="font-size:11px" id="kVal">0.35</span></div>
-            <input type="range" min="20" max="50" value="35" id="kSlider" oninput="document.getElementById('kVal').textContent=(this.value/100).toFixed(2);saveProfile();recalc()">
+  <!-- Accordion: Modellparameter -->
+  <div class="acc-section">
+    <div class="acc-header" onclick="toggleAcc('acc-model')">
+      <div class="acc-header-left">
+        <span class="acc-title">Modellparameter</span>
+        <span class="acc-summary" id="acc-model-summary">k · N</span>
+      </div>
+      <span class="acc-chevron" id="acc-model-chev">›</span>
+    </div>
+    <div class="acc-body" id="acc-model">
+      <div style="display:flex;flex-direction:column;gap:12px;padding-top:4px">
+        <div class="pfield">
+          <div class="plabel">k — Schwierigkeitsskalierung <span class="plabel-link" onclick="navToDoc('difficulty')">→</span></div>
+          <div class="srow">
+            <input type="range" min="20" max="50" value="35" id="kSlider"
+              oninput="document.getElementById('kVal').textContent=(this.value/100).toFixed(2);saveProfile();recalc()">
+            <span class="sval" id="kVal">0.35</span>
           </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:11px;color:var(--txt3)">N — Gleitender Ø (Sessions) <span class="plabel-link" onclick="navToDoc('baseline')">→</span></span><span class="sval" style="font-size:11px" id="nVal">10</span></div>
-            <input type="range" min="3" max="20" value="10" id="nSlider" oninput="document.getElementById('nVal').textContent=this.value;saveProfile();recalc()">
+        </div>
+        <div class="divider"></div>
+        <div class="pfield">
+          <div class="plabel">N — Gleitender Ø <span class="plabel-link" onclick="navToDoc('baseline')">→</span></div>
+          <div class="srow">
+            <input type="range" min="3" max="20" value="10" id="nSlider"
+              oninput="document.getElementById('nVal').textContent=this.value;saveProfile();recalc()">
+            <span class="sval" id="nVal">10</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="card">
+    <div class="card">
     <div class="ctitle">Daten</div>
     <div class="data-btns">
       <div class="dbtn" onclick="exportData()">Exportieren</div>
@@ -791,6 +867,7 @@ function syncUI(){
   document.getElementById('nVal').textContent=S.n;
   document.getElementById('profileNameInput').value=S.name||'';
   renderSelfSkill();renderBoulders();recalc();
+  updateAccSummaries();
 }
 
 function updateTopbar(){
@@ -857,6 +934,7 @@ function saveProfileName(){
 }
 
 function saveProfile(){
+  updateAccSummaries();
   S.age=parseInt(document.getElementById('ageSlider').value);
   S.k=parseFloat(document.getElementById('kSlider').value)/100;
   S.n=parseInt(document.getElementById('nSlider').value);
@@ -1006,6 +1084,16 @@ function recalc(){
     document.getElementById('scoreZone').textContent='';
     document.getElementById('ringArc').style.strokeDashoffset=396;
     document.getElementById('ringArc').style.stroke='#d4f54c';
+    // Reset level ring too
+    var la=document.getElementById('levelArc');
+    var ln=document.getElementById('levelNum');
+    var ll=document.getElementById('levelLbl');
+    if(la){
+      var L2=getSkillLevel(),lev2=getLevel(L2),lc=lev2?lev2.color:'#d4f54c';
+      la.style.strokeDashoffset=289*(1-Math.min(L2/8,1));la.style.stroke=lc;
+      if(ln){ln.textContent=L2.toFixed(1);ln.className='snum-sm';ln.style.color=lc;}
+      if(ll){ll.textContent=lev2?lev2.icon+' '+lev2.title:'Level';}
+    }
     document.getElementById('fRaw').textContent='—';
     document.getElementById('formulaBox').innerHTML='BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100';
     document.getElementById('sessionMsg').classList.remove('show');
@@ -1022,6 +1110,21 @@ function recalc(){
   document.getElementById('scoreZone').textContent=zone;document.getElementById('scoreZone').style.color=col;
   var arc=document.getElementById('ringArc');
   arc.style.strokeDashoffset=396*(1-Math.min(r.bpu/150,1));arc.style.stroke=col;
+  // Update level ring — circumference 2*pi*46 ≈ 289, scale 0-8
+  var levelArc=document.getElementById('levelArc');
+  var levelNum=document.getElementById('levelNum');
+  var levelLbl=document.getElementById('levelLbl');
+  if(levelArc&&levelNum){
+    var lev=getLevel(L);
+    var levCol=lev?lev.color:'#d4f54c';
+    var levPct=Math.min(L/8,1);
+    levelArc.style.strokeDashoffset=289*(1-levPct);
+    levelArc.style.stroke=levCol;
+    levelNum.textContent=L.toFixed(1);
+    levelNum.className='snum-sm';
+    levelNum.style.color=levCol;
+    levelLbl.textContent=lev?lev.icon+' '+lev.title:'Level';
+  }
   document.getElementById('fRaw').textContent=r.sRaw.toFixed(1);
   document.getElementById('formulaBox').innerHTML='BPU = ('+r.sRaw.toFixed(1)+' / '+r.baseline.toFixed(1)+') · <strong>'+r.fe.toFixed(3)+'</strong> · <strong>'+r.fa.toFixed(3)+'</strong> · <strong>'+r.fg.toFixed(2)+'</strong> · <strong>'+r.fd.toFixed(2)+'</strong> · 100 = <strong>'+rounded+'</strong>';
 
@@ -1110,18 +1213,56 @@ function deleteSession(id){
   persistActive();renderHistory();recalc();showToast('Session gelöscht');
 }
 
+// Compression: strip boulder details from sessions older than 30 days
+// Keeps all stats (BPU, grade, tops) but removes the large boulders array
+function compressOldSessions(){
+  var cutoff=Date.now()-30*24*60*60*1000;
+  var changed=false;
+  S.sessions.forEach(function(s){
+    if(s.dateMs&&s.dateMs<cutoff&&s.boulders&&s.boulders.length){
+      delete s.boulders;
+      changed=true;
+    }
+  });
+  if(changed){persistActive();console.log('BPU: old sessions compressed');}
+}
+
+// Estimate localStorage usage in KB
+function estimateStorageKB(){
+  try{
+    var list=loadProfiles();
+    return Math.round(JSON.stringify(list).length/1024);
+  }catch(e){return 0;}
+}
+
+var _histPage=1;
+var HIST_PAGE_SIZE=20;
+
 function renderHistory(){
+  compressOldSessions();
+
   var bl=getBaseline();
   document.getElementById('baselineLbl').textContent=bl?'Baseline '+bl.toFixed(0):'';
-
   var n=S.sessions.length;
   document.getElementById('stSess').textContent=n||'—';
 
   if(n){
     var bpus=S.sessions.map(function(s){return s.bpu;});
     document.getElementById('stAvg').textContent=Math.round(bpus.reduce(function(a,b){return a+b;},0)/bpus.length);
-    var best=Math.max.apply(null,bpus);
-    document.getElementById('stBest').textContent=best;
+    var best2=Math.max.apply(null,bpus);
+    document.getElementById('stBest').textContent=best2;
+    var lastSess=S.sessions[S.sessions.length-1];
+    var prevSessions=S.sessions.slice(0,-1);
+    var prevBest2=prevSessions.length?Math.max.apply(null,prevSessions.map(function(s){return s.bpu;})):0;
+    var isNewBest=lastSess&&prevSessions.length>0&&lastSess.bpu>prevBest2;
+    document.getElementById('recBestBPU').innerHTML=best2+(isNewBest?'<span class="rec-new">NEU</span>':'');
+    var now2=Date.now(),monthMs=30*24*60*60*1000;
+    var monthly=S.sessions.filter(function(s){return now2-s.dateMs<monthMs;}).length;
+    document.getElementById('recStreak').textContent=monthly;
+    var allTops=S.sessions.reduce(function(s,x){return s+(x.topped||0);},0);
+    document.getElementById('recTops').textContent=allTops;
+    var skillL=getSkillLevel(),skillLev=getLevel(skillL);
+    document.getElementById('recBestGrade').textContent=skillLev?(skillLev.icon+' '+skillL.toFixed(1)):'—';
   }else{
     document.getElementById('stAvg').textContent='—';
     document.getElementById('stBest').textContent='—';
@@ -1147,82 +1288,231 @@ function renderHistory(){
     }
   }else{lvBanner.style.display='none';}
 
-  // Week goal
-  renderWeekDots();
+  // ── Week dots ──
+  (function renderWeekDots(){
+    var weekCard=document.getElementById('weekCard');
+    if(!weekCard)return;
+    var now=new Date(),dow=now.getDay();
+    var weekStart=new Date(now);weekStart.setDate(now.getDate()-(dow===0?6:dow-1));weekStart.setHours(0,0,0,0);
+    var dots=[];
+    for(var d=0;d<7;d++){
+      var day=new Date(weekStart);day.setDate(weekStart.getDate()+d);
+      var dayMs=day.getTime(),nextMs=dayMs+86400000;
+      var trained=S.sessions.some(function(s){return s.dateMs>=dayMs&&s.dateMs<nextMs;});
+      var isToday=d===(dow===0?6:dow-1);
+      dots.push({trained:trained,isToday:isToday,day:['Mo','Di','Mi','Do','Fr','Sa','So'][d]});
+    }
+    var trained=dots.filter(function(d){return d.trained;}).length;
+    weekCard.style.display='block';
+    document.getElementById('weekTitle').textContent='Diese Woche: '+trained+' von 7 Tagen'+(trained>=4?' 💪':trained>=2?' 👍':' — ran an die Wand!');
+    document.getElementById('weekDots').innerHTML=dots.map(function(d){
+      var cls='week-dot'+(d.trained?' done':d.isToday?' today':'');
+      return '<div class="'+cls+'" title="'+d.day+'"></div>';
+    }).join('');
+  })();
 
-  // Records
-  if(n){
-    document.getElementById('recordsGrid').style.display='grid';
-    var best2=Math.max.apply(null,S.sessions.map(function(s){return s.bpu;}));
-    var lastSess=S.sessions[S.sessions.length-1];
-    var isNewBest=lastSess&&lastSess.bpu>=best2&&n>1;
-    document.getElementById('recBestBPU').innerHTML=best2+(isNewBest?'<span class="rec-new">NEU</span>':'');
-    var now=Date.now(),monthMs=30*24*60*60*1000;
-    var monthly=S.sessions.filter(function(s){return now-s.dateMs<monthMs;}).length;
-    document.getElementById('recStreak').textContent=monthly;
-    var allTops=S.sessions.reduce(function(s,x){return s+(x.topped||0);},0);
-    document.getElementById('recTops').textContent=allTops;
-    var allGrades=S.sessions.filter(function(s){return s.avgGrade;}).map(function(s){return s.avgGrade;});
-    document.getElementById('recBestGrade').textContent=allGrades.length?Math.max.apply(null,allGrades):'—';
-  }else{document.getElementById('recordsGrid').style.display='none';}
+  if(n){document.getElementById('recordsGrid').style.display='grid';}
+  else{document.getElementById('recordsGrid').style.display='none';}
 
-  // Session list
-  var DURL={short:'< 1h',mid:'1–3h',long:'> 3h'};
-  var list=document.getElementById('sessionList');
-  if(!n){
-    list.innerHTML='<div class="empty"><div class="empty-icon">🦍</div>Noch keine Sessions.<br>Rauf auf die Wand und losgelegt!</div>';
-    drawHistCanvas();return;
-  }
-  list.innerHTML=S.sessions.slice().reverse().map(function(s){
-    var col,zone;
-    if(s.bpu<80){col='#40c898';zone='Erholung';}else if(s.bpu<110){col='#d4f54c';zone='Normal';}
-    else if(s.bpu<130){col='#f0a832';zone='Stark';}else{col='#f05050';zone='Rekord';}
-    return '<div class="sitem"><div class="sbpu" style="color:'+col+'">'+s.bpu+'</div>'
-      +'<div class="sinfo"><div class="sdate">'+s.date+'</div>'
-      +'<div class="sdetail">'+s.topped+' Tops'+(s.failed?' · '+s.failed+'✗':'')+' · '+(s.avgGrade||'—')+' · '+DURL[s.dur]+'</div></div>'
-      +'<span class="szone" style="background:'+col+'18;color:'+col+'">'+zone+'</span>'
-      +'<button class="s-del" onclick="deleteSession('+s.id+')">×</button></div>';
-  }).join('');
+  // Storage warning
+  renderStorageWarning();
+
+  // Session list with pagination
+  _histPage=1;
+  renderSessionPage();
   drawHistCanvas();
 }
 
-function renderWeekDots(){
-  var weekCard=document.getElementById('weekCard');
-  var now=new Date(),dow=now.getDay();
-  var weekStart=new Date(now);weekStart.setDate(now.getDate()-(dow===0?6:dow-1));weekStart.setHours(0,0,0,0);
-  var dots=[];
-  for(var d=0;d<7;d++){
-    var day=new Date(weekStart);day.setDate(weekStart.getDate()+d);
-    var dayMs=day.getTime(),nextMs=dayMs+86400000;
-    var trained=S.sessions.some(function(s){return s.dateMs>=dayMs&&s.dateMs<nextMs;});
-    var isToday=d===(dow===0?6:dow-1);
-    dots.push({trained:trained,isToday:isToday,day:['Mo','Di','Mi','Do','Fr','Sa','So'][d]});
+function renderStorageWarning(){
+  var existing=document.getElementById('storageWarn');
+  if(existing)existing.remove();
+  var n=S.sessions.length;
+  var kb=estimateStorageKB();
+  if(n<200&&kb<1500)return;
+
+  var msg='';
+  if(kb>=3000){
+    msg='<strong>Speicher fast voll</strong> ('+kb+' KB). Exportiere und lösche alte Sessions um Datenverlust zu vermeiden.';
+  }else if(kb>=1500){
+    msg='<strong>'+n+' Sessions gespeichert</strong> ('+kb+' KB). Für beste Performance empfehlen wir gelegentlich alte Sessions zu exportieren und zu löschen.';
+  }else{
+    msg='<strong>'+n+' Sessions</strong> — viele Daten. Ältere Sessions wurden automatisch komprimiert.';
   }
-  var trained=dots.filter(function(d){return d.trained;}).length;
-  weekCard.style.display='block';
-  document.getElementById('weekTitle').textContent='Diese Woche: '+trained+' von 7 Tagen trainiert '+
-    (trained>=4?'💪':trained>=2?'👍':'— ran an die Wand!');
-  document.getElementById('weekDots').innerHTML=dots.map(function(d){
-    var cls='week-dot'+(d.trained?' done':d.isToday?' today':'');
-    return '<div class="'+cls+'" title="'+d.day+'"></div>';
+
+  var warn=document.createElement('div');
+  warn.id='storageWarn';
+  warn.className='storage-warn';
+  warn.innerHTML='<div><div>⚠ '+msg+'</div>'
+    +'<div class="storage-warn-btns">'
+    +'<button class="sw-btn" onclick="exportData()">Exportieren</button>'
+    +(n>50?'<button class="sw-btn" onclick="deleteOldSessions()">Ältere 30 Tage löschen</button>':'')
+    +'</div></div>';
+
+  var list=document.getElementById('sessionList');
+  list.parentNode.insertBefore(warn, list);
+}
+
+function deleteOldSessions(){
+  var cutoff=Date.now()-30*24*60*60*1000;
+  var before=S.sessions.length;
+  S.sessions=S.sessions.filter(function(s){return !s.dateMs||s.dateMs>=cutoff;});
+  var removed=before-S.sessions.length;
+  if(removed>0){
+    persistActive();renderHistory();
+    showToast(removed+' alte Sessions gelöscht');
+  }else{
+    showToast('Keine Sessions älter als 30 Tage');
+  }
+}
+
+function renderSessionPage(){
+  var DURL={short:'< 1h',mid:'1–3h',long:'> 3h'};
+  var list=document.getElementById('sessionList');
+  var sorted=S.sessions.slice().reverse();
+  var total=sorted.length;
+  var show=sorted.slice(0,_histPage*HIST_PAGE_SIZE);
+
+  if(!total){
+    list.innerHTML='<div class="empty"><div class="empty-icon">🦍</div>Noch keine Sessions.<br>Rauf auf die Wand und losgelegt!</div>';
+    return;
+  }
+
+  var items=show.map(function(s){
+    var col,zone;
+    if(s.bpu<80){col='#40c898';zone='Erholung';}
+    else if(s.bpu<110){col='#d4f54c';zone='Normal';}
+    else if(s.bpu<130){col='#f0a832';zone='Stark';}
+    else{col='#f05050';zone='Rekord';}
+
+    var fG=[],wG=[],pG=[];
+    if(s.boulders){s.boulders.forEach(function(b){
+      if(b.res!=='top')return;
+      if(b.ver==='1')fG.push(b.g);else if(b.ver==='low')wG.push(b.g);
+      if(b.g>0)pG.push(b.g);
+    });}
+    var savg=function(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;};
+    var fL2=savg(fG)||savg(wG)||s.avgGrade||3;
+    var wL2=savg(wG)||fL2;
+    var pL2=pG.length?Math.max.apply(null,pG):wL2;
+    var sLvl=fL2*0.2+wL2*0.5+pL2*0.3;
+    var sLev=getLevel(sLvl);
+    var sLevStr=sLev?(sLev.icon+' '+sLvl.toFixed(1)):('Grad '+sLvl.toFixed(1));
+
+    return '<div class="sitem"><div class="sbpu" style="color:'+col+'">'+s.bpu+'</div>'
+      +'<div class="sinfo"><div class="sdate">'+s.date+'</div>'
+      +'<div class="sdetail">'+s.topped+' Tops'+(s.failed?' · '+s.failed+'✗':'')+' · '+DURL[s.dur]+'</div></div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+      +'<div style="font-size:13px;font-weight:600;color:#58a8f0">'+sLevStr+'</div>'
+      +'<span class="szone" style="background:'+col+'18;color:'+col+'">'+zone+'</span>'
+      +'</div>'
+      +'<button class="s-del" onclick="deleteSession('+s.id+')">×</button></div>';
   }).join('');
+
+  // Load more button
+  var remaining=total-show.length;
+  var loadMore=remaining>0
+    ?'<button class="load-more-btn" onclick="loadMoreSessions()">'+remaining+' ältere Sessions laden</button>'
+    :'';
+
+  list.innerHTML='<div class="slist">'+items+'</div>'+loadMore;
+}
+
+function loadMoreSessions(){
+  _histPage++;
+  renderSessionPage();
 }
 
 function drawHistCanvas(){
   var c=document.getElementById('histCanvas');if(!c)return;
-  var dpr=window.devicePixelRatio||1,W=c.offsetWidth||300,H=80;
+  var dpr=window.devicePixelRatio||1,W=c.offsetWidth||300,H=90;
   c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
   var ctx=c.getContext('2d');ctx.scale(dpr,dpr);
   var sess=S.sessions.slice(-24);if(!sess.length)return;
-  var bl=getBaseline(),maxV=Math.max.apply(null,sess.map(function(s){return s.bpu;}).concat([130]));
+  var bl=getBaseline();
+  var maxBPU=Math.max.apply(null,sess.map(function(s){return s.bpu;}).concat([130]));
   var bw=(W-8)/sess.length-4;
+
+  // ── BPU bars ──
   sess.forEach(function(s,i){
-    var x=4+i*(bw+4),h=Math.max((s.bpu/maxV)*(H-18),3),y=H-14-h;
+    var x=4+i*(bw+4),h=Math.max((s.bpu/maxBPU)*(H-26),3),y=H-18-h;
     var col=s.bpu>=130?'#f05050':s.bpu>=110?'#f0a832':s.bpu>=80?'#d4f54c':'#40c898';
-    ctx.fillStyle=col+'66';ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,bw,h,2);else ctx.rect(x,y,bw,h);ctx.fill();
-    ctx.fillStyle='rgba(200,200,200,0.35)';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText(s.bpu,x+bw/2,H-2);
+    ctx.fillStyle=col+'55';
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,bw,h,2);else ctx.rect(x,y,bw,h);ctx.fill();
+    ctx.fillStyle='rgba(200,200,200,0.3)';ctx.font='8px monospace';ctx.textAlign='center';
+    ctx.fillText(s.bpu,x+bw/2,H-6);
   });
-  if(bl){var by=H-14-(bl/maxV)*(H-18);ctx.strokeStyle='rgba(212,245,76,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);}
+
+  // ── Baseline dashed line ──
+  if(bl){
+    var by=H-18-(bl/maxBPU)*(H-26);
+    ctx.strokeStyle='rgba(212,245,76,0.35)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(0,by);ctx.lineTo(W,by);ctx.stroke();ctx.setLineDash([]);
+  }
+
+  // ── Level line (weighted skill grade) ──
+  // Collect skill level per session using the same weighted formula
+  // Approximate per-session: use session boulders to compute flash/work/project grades
+  var levelPoints=[];
+  for(var i=0;i<sess.length;i++){
+    var s=sess[i];
+    var fG=[],wG=[],pG=[];
+    // Use stored boulders if available
+    if(s.boulders&&s.boulders.length){
+      for(var j=0;j<s.boulders.length;j++){
+        var b=s.boulders[j];
+        if(b.res!=='top')continue;
+        if(b.ver==='1')fG.push(b.g);
+        else if(b.ver==='low')wG.push(b.g);
+        if(b.g>0)pG.push(b.g);
+      }
+    }
+    var avg=function(arr){return arr.length?arr.reduce(function(a,b){return a+b;},0)/arr.length:null;};
+    var mx=function(arr){return arr.length?Math.max.apply(null,arr):null;};
+    var fL=avg(fG)||avg(wG)||s.avgGrade||3;
+    var wL=avg(wG)||fL;
+    var pL=mx(pG)||wL;
+    var lvl=fL*0.2+wL*0.5+pL*0.3;
+    levelPoints.push(lvl);
+  }
+
+  // Scale level line: grade 1-8 maps to top 20% - 90% of chart height
+  var minG=1,maxG=8;
+  var yForGrade=function(g){
+    var pct=(g-minG)/(maxG-minG);
+    return (H-20)-(pct*(H-36));
+  };
+
+  if(levelPoints.length>1){
+    // Draw area fill under line
+    ctx.beginPath();
+    ctx.moveTo(4+0*(bw+4)+bw/2, yForGrade(levelPoints[0]));
+    for(var i=1;i<levelPoints.length;i++){
+      ctx.lineTo(4+i*(bw+4)+bw/2, yForGrade(levelPoints[i]));
+    }
+    ctx.strokeStyle='rgba(88,168,240,0.8)';
+    ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.stroke();
+
+    // Dots at each point
+    for(var i=0;i<levelPoints.length;i++){
+      var x=4+i*(bw+4)+bw/2,y=yForGrade(levelPoints[i]);
+      ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);
+      ctx.fillStyle='#58a8f0';ctx.fill();
+    }
+
+    // Label on last point
+    var lastX=4+(levelPoints.length-1)*(bw+4)+bw/2;
+    var lastY=yForGrade(levelPoints[levelPoints.length-1]);
+    ctx.fillStyle='rgba(88,168,240,0.8)';ctx.font='8px monospace';ctx.textAlign='center';
+    ctx.fillText(levelPoints[levelPoints.length-1].toFixed(1),lastX,lastY-6);
+  }
+
+  // ── Legend ──
+  ctx.font='8px monospace';ctx.textAlign='left';
+  ctx.fillStyle='rgba(212,245,76,0.6)';ctx.fillRect(4,2,10,4);ctx.fillText('BPU',17,7);
+  ctx.fillStyle='rgba(88,168,240,0.8)';
+  ctx.beginPath();ctx.moveTo(38,4);ctx.lineTo(48,4);ctx.strokeStyle='rgba(88,168,240,0.8)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillText('Grad',51,7);
 }
 
 // ═══════════════════════════════════════════
@@ -1249,6 +1539,30 @@ function setGenderUI(g){['w','m','d'].forEach(function(x){document.getElementByI
 function setGender(g){S.gender=g;setGenderUI(g);persistActive();recalc();updateProfileInfo();}
 function setDurUI(d){['short','mid','long'].forEach(function(x){document.getElementById('db-'+x).classList.toggle('active',x===d);});}
 function setDur(d){S.dur=d;setDurUI(d);recalc();}
+
+function toggleAcc(id){
+  var body=document.getElementById(id);
+  var chev=document.getElementById(id+'-chev');
+  if(!body)return;
+  var isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  if(chev)chev.classList.toggle('open',!isOpen);
+  // Draw age curve when personal accordion opens
+  if(id==='acc-personal'&&!isOpen)setTimeout(drawAgeCurve,50);
+}
+
+// Update accordion summaries to reflect current values
+function updateAccSummaries(){
+  var GLAB={w:'Weiblich',m:'Männlich',d:'Divers'};
+  var selfLev=null;
+  for(var i=0;i<SELF_LEVELS.length;i++){if(SELF_LEVELS[i].key===S.selfLevel){selfLev=SELF_LEVELS[i];break;}}
+  var ps=document.getElementById('acc-personal-summary');
+  if(ps)ps.textContent=(S.name||'—')+' · '+(GLAB[S.gender]||'—')+' · '+S.age+' J.';
+  var ls=document.getElementById('acc-level-summary');
+  if(ls)ls.textContent=selfLev?(selfLev.animal+' '+selfLev.label):'Startwert';
+  var ms=document.getElementById('acc-model-summary');
+  if(ms)ms.textContent='k='+S.k.toFixed(2)+' · N='+S.n;
+}
 
 function exportData(){
   var blob=new Blob([JSON.stringify({profile:S.name,sessions:S.sessions},null,2)],{type:'application/json'});
@@ -1303,7 +1617,7 @@ var DOCS={
   overview:{title:'BPU — Das Modell',sub:'Boulder Performance Unit · Vollständige Formel',body:'<h3>Was ist die BPU?</h3><p>Die Boulder Performance Unit misst wie nah du in einer Session an deinem eigenen Maximum warst — nicht wie gut du im Vergleich zu anderen bist. BPU = 100 heißt: du hast exakt dein übliches Niveau abgerufen.</p><h3>Vollständige Formel</h3><div class="doc-formula">BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100<br><br><span class="c">// S_raw    = Σ e^(k·g) · F_ver · F_res</span><br><span class="c">// Baseline = Gleitender Ø der letzten N Sessions</span><br><span class="c">// F_eff    = 1 + 0.3·(1 − L/8)  (L = dein Level)</span><br><span class="c">// F_alter  = Alterskurve (Peak ~42 J.)</span><br><span class="c">// F_gesch  = w=1.00 / m=0.88 / d=0.94</span><br><span class="c">// F_dauer  = &lt;1h→1.25 / 1–3h→1.00 / &gt;3h→0.85</span></div><h3>Das Kernprinzip</h3><p>Ein höherer Score bedeutet nicht, dass du der bessere Kletterer bist — er bedeutet, dass du heute relativ zu deiner eigenen Norm stärker performt hast.</p><div class="doc-warn">⚠ Das Modell ist eine sportmedizinisch fundierte Approximation. Parameter wie k und α sind Schätzwerte — du kannst sie im Profil anpassen.</div>'},
   difficulty:{title:'Schwierigkeitsgewichtung',sub:'Exponentieller Basiswert w(g) · k = 0.35',body:'<h3>Warum exponentiell?</h3><p>Die Grade 1–8 sind keine lineare Skala. Der Sprung von 7→8 ist physiologisch viel größer als von 1→2. Ohne Exponentialgewichtung würden schwere Boulder systematisch unterschätzt.</p><h3>Formel</h3><div class="doc-formula">w(g) = e^(k · g)<br><br><span class="c">// k = 0.35 ≈ ln(2)/2 → alle 2 Grade ≈ Verdopplung</span></div><table class="doc-table"><tr><th>Grad</th><th>w(g)</th><th>Faktor</th></tr><tr><td>1 — Warm-up</td><td>1.42</td><td>1×</td></tr><tr><td>3 — Aufbau</td><td>2.86</td><td>2.0×</td></tr><tr><td>5 — Stark</td><td>5.75</td><td>4.1×</td></tr><tr><td>7 — Beastmode</td><td>11.59</td><td>8.2×</td></tr><tr><td>8 — Ape-Level</td><td>16.44</td><td>11.6×</td></tr></table><div class="doc-src">Quelle: Mermier et al. (1997); Baláš et al. (2014); IRCRA Performance Scale</div>'},
   attempts:{title:'Versuche & Ergebnis',sub:'Zwei-Achsen-Modell · F_ver · F_res',body:'<h3>Zwei unabhängige Dimensionen</h3><p>Versuchsanzahl und Ergebnis (Top oder nicht) fließen getrennt ein. Die Grenze zwischen den Versuchszonen basiert auf der Praxis: 2–5 Versuche bedeuten du verstehst den Boulder grundsätzlich und es klappt — 6+ Versuche bedeuten Projektarbeit mit kumulierter Ermüdung und intensivem Beta-Suchen.</p><h3>F_ver — Anzahl Versuche</h3><div class="doc-formula">Flash (1×)     → × 1.30  <span class="c">// Erstversuch ohne Vorabwissen</span><br>Wenige (2–5×)  → × 1.00  <span class="c">// Verstanden, gekonnt</span><br>Projekt (6–20×)→ × 0.80  <span class="c">// Projektarbeit, Ermüdung</span></div><h3>F_res — Ergebnis</h3><div class="doc-formula">Top geschafft → × 1.00<br>Kein Top      → × 0.60  <span class="c">// Anstrengung ohne Abschluss</span></div><h3>Kombinierte Faktoren</h3><table class="doc-table"><tr><th>Situation</th><th>F_ver × F_res</th><th>Gesamt</th></tr><tr><td>Flash, Top</td><td>1.30 × 1.00</td><td>1.30</td></tr><tr><td>2–5×, Top</td><td>1.00 × 1.00</td><td>1.00</td></tr><tr><td>6–20×, Top</td><td>0.80 × 1.00</td><td>0.80</td></tr><tr><td>1×, Kein Top</td><td>1.30 × 0.60</td><td>0.78</td></tr><tr><td>2–5×, Kein Top</td><td>1.00 × 0.60</td><td>0.60</td></tr><tr><td>6–20×, Kein Top</td><td>0.80 × 0.60</td><td>0.48</td></tr></table><h3>Warum 5/6 als Grenze?</h3><p>Mini-Projekte werden typisch in 2–5 Versuchen abgeschlossen — in diesem Bereich versteht man den Boulder und setzt ihn durch. Ab 6 Versuchen wechselt die Natur: Beta wird iterativ erarbeitet, kumulative Fingerermüdung setzt ein, und der Boulder ist ein echtes Projekt. Diese Grenze spiegelt die Trainingspraxis direkt wider.</p><p>Kein Top → kein Grad für das Level-Tracking. Nur getoppte Boulder fließen in die Könnerstufe ein.</p><div class="doc-src">Quelle: Rock and Sun — Art of Redpointing (2020); Training Beta — Projecting Process (Mirsky); de Geus et al. (2006) Eur J Appl Physiol</div>'},
-  baseline:{title:'Baseline & Level-Tracking',sub:'Gewichtete Könnerstufe · Flash / Work / Project',body:'<h3>Die Baseline</h3><div class="doc-formula">Baseline = (Σ S_raw[i], i=1..N) / N</div><p>Dein gleitender Durchschnitt der letzten N Sessions. Steigt automatisch mit deinem Level.</p><h3>Könnerstufe — gewichtete drei Zonen</h3><p>Ein einfacher Ø-Grad unterschätzt dein Leistungsvermögen, weil leichte Flashes das Bild verzerren. Die Könnerstufe basiert auf drei Zonen mit unterschiedlicher Gewichtung:</p><div class="doc-formula">L = Flash-Zone × 0.2 + Arbeitszone × 0.5 + Projektzone × 0.3<br><br><span class="c">// Flash-Zone  = Ø-Grad aller Flashes (Komfortbereich)</span><br><span class="c">// Arbeitszone = Ø-Grad bei 2–10 Versuchen, Top (Entwicklung)</span><br><span class="c">// Projektzone = höchster getoppter Grad (aktuelles Limit)</span></div><p>Die Forschung zeigt: Dein Consistent Redpoint — der Grad den du nach mehreren Versuchen zuverlässig toppst — ist der aussagekräftigste Leistungsindikator. Flash-Routen liegen typisch 1–3 Grade darunter und sagen wenig über dein Limit aus.</p><h3>Wahl von N</h3><table class="doc-table"><tr><th>N</th><th>Eigenschaften</th></tr><tr><td>3–5</td><td>Reaktiv, volatil</td></tr><tr><td>8–12</td><td>Ausgewogen (Empfehlung)</td></tr><tr><td>15–20</td><td>Stabil, träge</td></tr></table><div class="doc-src">Quelle: Rowland (2022) PRG Climbing School; Climbstat analysis 8a.nu dataset (2020)</div>'},
+  baseline:{title:'Baseline, Grad & Level-Tracking',sub:'Die zwei Kernindikatoren der App · BPU & Grad',body:'<h3>Die zwei Kernindikatoren</h3><p>Die App zeigt dir dauerhaft zwei Werte — sie beantworten zwei verschiedene Fragen:</p><table class="doc-table"><tr><th>Wert</th><th>Frage</th><th>Bedeutung</th></tr><tr><td><strong>BPU</strong></td><td>Wie war heute?</td><td>Session-Performance relativ zu deiner Norm. 100 = dein übliches Niveau.</td></tr><tr><td><strong>Grad</strong></td><td>Wo stehe ich?</td><td>Dein aktuelles Kletter-Level als gewichteter Gradwert. Steigt mit echter Entwicklung.</td></tr></table><h3>Der Grad — gewichtete Könnerstufe</h3><p>Ein einfacher Ø-Grad unterschätzt dein Leistungsvermögen, weil leichte Flashes das Bild verzerren. Der angezeigte Grad basiert auf drei Zonen mit unterschiedlicher Gewichtung:</p><div class="doc-formula">L = Flash-Zone × 0.2 + Arbeitszone × 0.5 + Projektzone × 0.3<br><br><span class="c">// Flash-Zone  = Ø-Grad aller Flashes (1 Versuch) → Komfortbereich</span><br><span class="c">// Arbeitszone = Ø-Grad bei 2–5 Versuchen, Top  → Entwicklungsbereich</span><br><span class="c">// Projektzone = höchster getoppter Grad          → aktuelles Limit</span></div><p>Die Arbeitszone (×0.5) hat das höchste Gewicht — das sind die Boulder bei denen du wirklich arbeitest und wächst. Flashes (×0.2) zählen kaum, weil sie deinen Komfortbereich zeigen, nicht dein Limit. Die Projektzone (×0.3) honoriert deinen aktuellen Hochpunkt.</p><p>Die Forschung bestätigt: Der Consistent Redpoint-Grad — den du nach mehreren Versuchen zuverlässig toppst — ist der aussagekräftigste Leistungsindikator. Flash-Routen liegen typisch 1–3 Grade darunter.</p><h3>Wo wird der Grad angezeigt?</h3><p>Der Grad erscheint in der App an drei Stellen: als kleiner Ring neben dem BPU-Ring auf der Session-Seite, als blaue Linie im Verlaufsdiagramm, und als Level-Anzeige pro Session in der Historie. Er ist immer nach derselben Formel berechnet — konsistent und vergleichbar.</p><h3>Die Baseline</h3><div class="doc-formula">Baseline = (Σ S_raw[i], i=1..N) / N</div><p>Der gleitende Durchschnitt deiner S_raw-Werte der letzten N Sessions. Steigt automatisch mit deinem Level — ein Anfänger und ein Experte erreichen beide BPU = 100 wenn sie ihr übliches Niveau abrufen.</p><h3>Wahl von N</h3><table class="doc-table"><tr><th>N</th><th>Eigenschaften</th></tr><tr><td>3–5</td><td>Reaktiv, volatil — für kurze Trainingsphasen</td></tr><tr><td>8–12</td><td>Ausgewogen (Empfehlung)</td></tr><tr><td>15–20</td><td>Stabil, träge — für Langzeittracking</td></tr></table><div class="doc-src">Quelle: Rowland (2022) PRG Climbing School; Climbstat 8a.nu dataset (2020); Baláš et al. (2014)</div>'},
   eff:{title:'Kletterökonomie',sub:'Effizienzfaktor F_eff · α = 0.30',body:'<h3>Das Problem</h3><p>Anfänger und Pros können denselben Grad klettern — der Anfänger arbeitet dabei physiologisch viel näher am Maximum. Schlechte Technik erzeugt ineffiziente Griffkraft und höhere Herzfrequenz für denselben Move.</p><h3>Formel</h3><div class="doc-formula">F_eff = 1 + 0.3 · (1 − L/8)<br><br><span class="c">// L=2 → F_eff=1.225 (+22.5%)</span><br><span class="c">// L=5 → F_eff=1.113 (+11.3%)</span><br><span class="c">// L=8 → F_eff=1.000</span></div><p>Das macht BPU fair vergleichbar: gleiche relative Anstrengung = gleicher Score — egal auf welchem Niveau.</p><div class="doc-src">Quelle: CAMP4 Wearable Sensors (2025); Philippe et al. (2019)</div>'},
   age:{title:'Altersfaktor F_alter',sub:'Peak ~42 Jahre · Asymmetrische Kurve',body:'<h3>Klettern peaked spät</h3><p>Anders als in reinen Kraftsportarten (~28 J.) liegt der Leistungspeak beim Klettern bei ~42 Jahren. Akkumulierte Bewegungserfahrung kompensiert den physiologischen Rückgang.</p><table class="doc-table"><tr><th>Phase</th><th>Alter</th><th>Verlauf</th></tr><tr><td>Aufbau</td><td>10–25 J.</td><td>Ramp-up</td></tr><tr><td>Plateau</td><td>25–42 J.</td><td>Langsam +</td></tr><tr><td>Abbau</td><td>42–60 J.</td><td>–0.85%/Jahr</td></tr><tr><td>Beschleunigt</td><td>60+ J.</td><td>–1.8%/Jahr</td></tr></table><div class="doc-src">Quelle: Akkari et al. (2015); BYU Masters (2024); Ring (2022) 8a.nu</div>'},
   gender:{title:'Geschlechtsnormierung',sub:'F_geschlecht · Fingerkraft-Normwerte',body:'<h3>Faktoren</h3><div class="doc-formula">Weiblich → 1.00  <span class="c">(Referenz)</span><br>Männlich → 0.88<br>Divers   → 0.94</div><p>Frauen werden als Referenz gesetzt, weil sie im Verhältnis Fingerkraft/Körpergewicht auf vergleichbaren Graden prozentual näher an ihrer maximalen Kapazität arbeiten. Die Normierung sorgt für gleichen BPU bei gleicher relativer Anstrengung.</p><div class="doc-warn">Hinweis: Bei Elite-Kletterern sind die Geschlechtsunterschiede deutlich geringer. Die Normierung ist primär für mittleres Niveau relevant.</div><div class="doc-src">Quelle: España-Romero et al. (2009); IRCRA (2021)</div>'},
