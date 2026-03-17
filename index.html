@@ -321,15 +321,15 @@ input[type=number]::placeholder,input[type=text]::placeholder{color:var(--txt3);
 .storage-warn-btns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
 .sw-btn{padding:6px 12px;border-radius:8px;font-size:11px;cursor:pointer;border:1px solid rgba(240,168,50,0.3);background:none;color:var(--amb);font-family:inherit;transition:all .12s;}
 .sw-btn:active{background:rgba(240,168,50,0.1);}
-.acc-section{border:1px solid var(--ln);border-radius:14px;overflow:hidden;background:var(--bg2);}
+.acc-section{border:1px solid var(--ln);border-radius:14px;background:var(--bg2);margin-bottom:0;}
 .acc-section+.acc-section{margin-top:8px;}
-.acc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;transition:background .12s;user-select:none;-webkit-user-select:none;}
+.acc-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;transition:background .12s;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;}
 .acc-header:active{background:var(--bg3);}
 .acc-header-left{display:flex;flex-direction:column;gap:2px;}
 .acc-title{font-size:14px;font-weight:600;}
 .acc-summary{font-size:11px;color:var(--txt3);font-family:'Courier New',monospace;}
-.acc-chevron{font-size:14px;color:var(--txt3);transition:transform .2s;flex-shrink:0;}
-.acc-chevron.open{transform:rotate(180deg);}
+.acc-chevron{font-size:18px;color:var(--txt3);transition:transform .25s ease;flex-shrink:0;line-height:1;display:inline-block;}
+.acc-chevron.open{transform:rotate(90deg);}
 .acc-body{display:none;padding:0 16px 16px;}
 .acc-body.open{display:block;}
 .acc-divider{height:1px;background:var(--ln);margin:0 16px;}
@@ -647,6 +647,8 @@ canvas{display:block;}
 
 <!-- DOCS PAGE -->
 <div class="page" id="page-docs">
+  <button class="back-btn" id="docsBackBtn" style="display:none;margin-bottom:2px"
+    onclick="showPage(_docsFromPage||'session')">← Zurück</button>
   <div class="doc-toc" id="docToc">
     <p style="font-size:13px;color:var(--txt2);margin-bottom:10px;line-height:1.65">Alle Faktoren, Formeln und wissenschaftlichen Grundlagen. Tippe für Details.</p>
     <div class="doc-grid">
@@ -718,7 +720,7 @@ var F_RES={top:1.00,fail:0.60};
 var VER_L={'1':'Flash · 1 Versuch',low:'Wenige · 2–5',many:'Projekt · 6–20'};
 var GCOL=['#98e0b8','#60c890','#38b070','#2898a0','#4888d8','#8060d8','#d84898','#f05050'];
 var AVCOL=['av0','av1','av2','av3','av4','av5'];
-var SP='bpu5_profiles', SA='bpu5_active';
+var SP='bpu_profiles', SA='bpu_active';
 
 // Level system — motivating names with climbing character
 var LEVELS=[
@@ -1546,9 +1548,12 @@ function toggleAcc(id){
   if(!body)return;
   var isOpen=body.classList.contains('open');
   body.classList.toggle('open',!isOpen);
-  if(chev)chev.classList.toggle('open',!isOpen);
-  // Draw age curve when personal accordion opens
-  if(id==='acc-personal'&&!isOpen)setTimeout(drawAgeCurve,50);
+  if(chev){
+    chev.textContent=isOpen?'›':'⌄';
+  }
+  if(!isOpen&&id==='acc-personal'){
+    setTimeout(drawAgeCurve,50);
+  }
 }
 
 // Update accordion summaries to reflect current values
@@ -1586,15 +1591,36 @@ function showPage(id){
   var idx={session:0,history:1,profile:2,docs:3};
   if(idx[id]!==undefined)document.querySelectorAll('.nb')[idx[id]].classList.add('active');
   if(id==='history'){renderHistory();}
-  if(id==='profile'){setTimeout(function(){drawAgeCurve();updateProfileInfo();},60);}
+  if(id==='profile'){setTimeout(function(){updateAccSummaries();updateProfileInfo();},60);}
+  if(id==='docs'){
+    // Always show TOC when navigating to docs via nav bar
+    document.getElementById('docToc').classList.remove('hidden');
+    document.getElementById('docDetail').classList.remove('active');
+  }
 }
 
+var _docsFromPage = null;
+
 function navToDoc(key){
+  // Remember where we came from
+  var active = document.querySelector('.page.active');
+  _docsFromPage = active ? active.id.replace('page-','') : null;
   document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
   document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
   document.getElementById('page-docs').classList.add('active');
   document.querySelectorAll('.nb')[3].classList.add('active');
   openDoc(key);
+  // Show back-to-origin button if we came from another page
+  var backToOrig = document.getElementById('docsBackBtn');
+  if(backToOrig){
+    if(_docsFromPage && _docsFromPage !== 'docs'){
+      var labels={session:'← Session',history:'← Verlauf',profile:'← Profil'};
+      backToOrig.textContent = labels[_docsFromPage] || '← Zurück';
+      backToOrig.style.display = 'flex';
+    } else {
+      backToOrig.style.display = 'none';
+    }
+  }
 }
 function openDoc(key){
   var doc=DOCS[key];if(!doc)return;
@@ -1608,6 +1634,13 @@ function openDoc(key){
 function closeDoc(){
   document.getElementById('docToc').classList.remove('hidden');
   document.getElementById('docDetail').classList.remove('active');
+  // Scroll docs page back to top
+  var docsPage=document.getElementById('page-docs');
+  if(docsPage)docsPage.scrollTop=0;
+  // Ensure docs nav tab is active (in case user got here via navToDoc)
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active');});
+  var navBtns=document.querySelectorAll('.nb');
+  if(navBtns[3])navBtns[3].classList.add('active');
 }
 
 // ═══════════════════════════════════════════
@@ -1644,7 +1677,7 @@ function finishOnboard(){
   var aid=getAID();
   var idx=list.findIndex(function(p){return p.id===aid;});
   if(idx>=0){list[idx].name=name;saveProfiles(list);}
-  try{try{localStorage.setItem('bpu5_onboarded','1');}catch(e){}}catch(e){}
+  try{try{localStorage.setItem('bpu_onboarded','1');}catch(e){}}catch(e){}
   document.getElementById('onboard').style.display='none';
   loadActive();
   showToast('Hey ' + name + ' — ab auf die Wand!');
@@ -1657,7 +1690,7 @@ function checkOnboard(){
   var isPlaceholder = (S.name==='Mein Profil' || S.name==='' || !S.name);
   var hasUsedApp = S.sessions && S.sessions.length > 0;
   var alreadyNamed = false;
-  try{alreadyNamed = !!localStorage.getItem('bpu5_onboarded');}catch(e){}
+  try{alreadyNamed = !!localStorage.getItem('bpu_onboarded');}catch(e){}
   if(isPlaceholder && !hasUsedApp && !alreadyNamed){
     document.getElementById('onboard').style.display='flex';
     setTimeout(function(){
@@ -1666,11 +1699,65 @@ function checkOnboard(){
     },400);
   }else if(!isPlaceholder){
     // Name was already set (existing users) — mark as onboarded silently
-    try{localStorage.setItem('bpu5_onboarded','1');}catch(e){}
+    try{localStorage.setItem('bpu_onboarded','1');}catch(e){}
+  }
+}
+
+// ─── DATA MIGRATION ──────────────────────────────────────────────────
+// Runs once on startup. Migrates data from any previous version key
+// to the current stable keys (bpu_profiles, bpu_active, bpu_onboarded).
+// Safe to run repeatedly — stops as soon as current data exists.
+function migrateIfNeeded(){
+  try{
+    // If current stable key already has data, nothing to do
+    var current=localStorage.getItem('bpu_profiles');
+    if(current&&current!=='null'&&current!=='[]')return;
+
+    // Legacy keys to check in order (newest first)
+    var legacyProfileKeys=['bpu5_profiles','bpu4_profiles','bpu3_profiles'];
+    var legacyActiveKeys =['bpu5_active',  'bpu4_active',  'bpu3_active'];
+    var legacyOnboardKeys=['bpu5_onboarded','bpu4_onboarded'];
+
+    for(var i=0;i<legacyProfileKeys.length;i++){
+      var data=localStorage.getItem(legacyProfileKeys[i]);
+      if(data&&data!=='null'&&data!=='[]'){
+        // Found legacy data — migrate to stable keys
+        localStorage.setItem('bpu_profiles', data);
+        var active=localStorage.getItem(legacyActiveKeys[i]);
+        if(active)localStorage.setItem('bpu_active', active);
+        var onboarded=localStorage.getItem(legacyOnboardKeys[0]);
+        if(onboarded)localStorage.setItem('bpu_onboarded', onboarded);
+        console.log('BPU: migrated data from '+legacyProfileKeys[i]);
+        // Clean up old keys
+        legacyProfileKeys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+        legacyActiveKeys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+        legacyOnboardKeys.forEach(function(k){try{localStorage.removeItem(k);}catch(e){}});
+        return;
+      }
+    }
+
+    // Also check single-profile v3 format (bpu3 key)
+    var v3=localStorage.getItem('bpu3');
+    if(v3&&v3!=='null'){
+      try{
+        var old3=JSON.parse(v3);
+        // Convert old flat structure to profiles array
+        var prof={id:Date.now()+'migrate',name:old3.name||'Mein Profil',
+          gender:old3.gender||'m',age:old3.age||30,k:old3.k||0.35,n:old3.n||10,
+          selfLevel:'cat',sessions:old3.sessions||[],createdAt:Date.now()};
+        localStorage.setItem('bpu_profiles',JSON.stringify([prof]));
+        localStorage.setItem('bpu_active',prof.id);
+        try{localStorage.removeItem('bpu3');}catch(e){}
+        console.log('BPU: migrated v3 single-profile data');
+      }catch(e){}
+    }
+  }catch(e){
+    console.warn('BPU migration error (non-critical):', e);
   }
 }
 
 function init(){
+  migrateIfNeeded();
   loadActive();
   checkOnboard();
   window.addEventListener('resize',function(){drawAgeCurve();drawHistCanvas();});
