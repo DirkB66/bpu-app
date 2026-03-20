@@ -49,31 +49,31 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 
 .card{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;padding:14px;}
 .card-lime{border-color:rgba(212,245,76,0.18);}
-.ctitle{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.ctitle{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
 .ctitle-link{font-size:10px;color:var(--blu);cursor:pointer;text-transform:none;letter-spacing:.04em;}
 
-.score-wrap{display:flex;flex-direction:column;align-items:center;padding:12px 0 8px;}
-.dual-ring-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px;}
-.ring-outer{position:relative;width:148px;height:148px;}
-.ring-outer-sm{position:relative;width:110px;height:110px;}
+.score-wrap{display:flex;flex-direction:column;align-items:center;padding:6px 0 4px;}
+.dual-ring-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:4px;}
+.ring-outer{position:relative;width:120px;height:120px;}
+.ring-outer-sm{position:relative;width:88px;height:88px;}
 .ring-outer-sm svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
 .ring-inner-sm{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .snum-sm{font-size:26px;font-weight:700;line-height:1;color:#d4f54c;transition:color .3s;letter-spacing:-.01em;}
-.snum-sm.dim{color:var(--txt3);font-size:18px;font-weight:400;}
+.snum-sm.dim{color:var(--txt3);font-size:17px;font-weight:400;}
 .slbl-sm{font-size:8px;color:var(--txt3);letter-spacing:.1em;margin-top:2px;text-transform:uppercase;}
-.ring-divider{width:1px;height:60px;background:var(--ln2);flex-shrink:0;}
+.ring-divider{width:1px;height:50px;background:var(--ln2);flex-shrink:0;}
 .ring-outer svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
 .ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.snum{font-size:58px;font-weight:700;line-height:1;color:var(--lim);transition:color .3s;letter-spacing:-.02em;}
-.snum.dim{color:var(--txt3);font-size:34px;font-weight:400;}
+.snum{font-size:56px;font-weight:700;line-height:1;color:var(--lim);transition:color .3s;letter-spacing:-.03em;}
+.snum.dim{color:var(--txt3);font-size:32px;font-weight:400;}
 .slbl{font-size:9px;color:var(--txt3);letter-spacing:.12em;margin-top:2px;text-transform:uppercase;}
-.szone{font-size:11px;letter-spacing:.04em;margin-top:4px;min-height:16px;transition:color .3s;}
-.fstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:10px;}
-.fcell{display:flex;flex-direction:column;align-items:center;background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:7px 3px;cursor:pointer;transition:background .12s;min-height:46px;justify-content:center;}
+.szone{font-size:12px;letter-spacing:.04em;margin-top:2px;min-height:0;transition:color .3s;}
+.fstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:8px;}
+.fcell{display:flex;flex-direction:column;align-items:center;background:var(--bg3);border:1px solid var(--ln);border-radius:10px;padding:5px 3px;cursor:pointer;transition:background .12s;min-height:40px;justify-content:center;}
 .fcell:active{background:var(--bg4);}
 .fv{font-size:11px;font-weight:600;}
 .fk{font-size:8px;color:var(--txt3);margin-top:3px;letter-spacing:.04em;text-transform:uppercase;}
-.formula{font-size:10px;color:var(--txt3);background:var(--bg3);border-radius:10px;padding:9px 11px;line-height:1.9;margin-top:8px;border:1px solid var(--ln);overflow-x:auto;white-space:nowrap;font-family:'Courier New',monospace;}
+.formula{font-size:10px;color:var(--txt3);background:var(--bg3);border-radius:10px;padding:6px 10px;line-height:1.5;margin-top:6px;border:1px solid var(--ln);overflow-x:auto;white-space:nowrap;font-family:'Courier New',monospace;}
 .formula strong{color:var(--lim);font-weight:600;}
 
 .session-msg{margin-top:10px;padding:10px 12px;background:var(--lbg2);border-radius:10px;border-left:2px solid var(--lim);font-size:12px;color:var(--txt2);line-height:1.6;display:none;}
@@ -81,19 +81,19 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 .session-msg strong{color:var(--lim);}
 
 .dur-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.dur-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
-.dur-btn .di{font-size:18px;line-height:1;}
-.dur-btn .dl{font-size:12px;font-weight:600;color:var(--txt);}
+.dur-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 6px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
+.dur-btn .di{font-size:16px;line-height:1;}
+.dur-btn .dl{font-size:15px;font-weight:600;color:var(--txt);}
 .dur-btn .ds{font-size:9px;color:var(--txt3);letter-spacing:.03em;}
 .dur-btn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);}
 .dur-btn.active .dl{color:var(--lim);}
 .dur-btn:active{transform:scale(0.96);}
 
-.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-.gbtn{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;border:1px solid var(--ln);background:var(--bg3);cursor:pointer;transition:all .12s;gap:2px;user-select:none;}
+.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.gbtn{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;border:1px solid var(--ln);background:var(--bg3);cursor:pointer;transition:all .12s;gap:0;user-select:none;}
 .gbtn:active{transform:scale(0.93);}
 .gbtn.sel{border-color:rgba(212,245,76,0.5);background:var(--lbg);}
-.gbtn .gn{font-size:26px;font-weight:700;line-height:1;}
+.gbtn .gn{font-size:28px;font-weight:700;line-height:1;}
 .gbtn .gs{font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:.03em;}
 .gbtn.sel .gs{color:var(--lim);}
 .gbtn[data-g="1"] .gn{color:#98e0b8;}
@@ -105,12 +105,12 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 .gbtn[data-g="7"] .gn{color:#d84898;}
 .gbtn[data-g="8"] .gn{color:#f05050;}
 
-.att-section{display:flex;flex-direction:column;gap:8px;}
+.att-section{display:flex;flex-direction:column;gap:6px;}
 .att-sublabel{font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px;}
 .att-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
 .res-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-.abtn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:11px 4px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
-.abtn .am{font-size:12px;font-weight:600;color:var(--txt);font-family:'Courier New',monospace;}
+.abtn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px;border-radius:12px;background:var(--bg3);border:1px solid var(--ln);cursor:pointer;transition:all .12s;gap:2px;}
+.abtn .am{font-size:15px;font-weight:600;color:var(--txt);font-family:'Courier New',monospace;}
 .abtn .as{font-size:9px;color:var(--txt3);letter-spacing:.03em;}
 .abtn.active{background:var(--lbg);border-color:rgba(212,245,76,0.35);}
 .abtn.active .am{color:var(--lim);}
@@ -120,7 +120,7 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 .abtn[data-r="fail"] .am{color:var(--txt3);}
 .abtn[data-r="fail"].active .am{color:var(--red);}
 .abtn:active{transform:scale(0.96);}
-.add-btn{width:100%;padding:15px;border-radius:12px;background:var(--lim);color:#111;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px;}
+.add-btn{width:100%;padding:10px;border-radius:12px;background:var(--lim);color:#111;font-size:17px;font-weight:700;border:none;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:6px;}
 .add-btn:active{transform:scale(0.98);background:var(--lim2);}
 .add-btn:disabled{background:var(--bg4);color:var(--txt3);cursor:default;transform:none;}
 
@@ -138,8 +138,27 @@ body{-webkit-text-size-adjust:100%;font-family:-apple-system,'Helvetica Neue',Ar
 .tag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:600;letter-spacing:.04em;margin-left:4px;}
 .tag-flash{background:var(--abg);color:var(--amb);}
 .tag-fail{background:var(--rbg);color:var(--red);}
+.tag-new{background:rgba(212,245,76,0.15);color:var(--lim);}
 
-.save-btn{width:100%;padding:16px;border-radius:14px;background:var(--bg3);border:1px solid var(--ln2);color:var(--txt);font-size:14px;font-weight:600;cursor:pointer;transition:all .12s;letter-spacing:.02em;}
+/* Boulder color + sector picker */
+.meta-section{display:flex;flex-direction:column;margin-top:8px;padding-top:8px;border-top:1px solid var(--ln);}
+.meta-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;user-select:none;-webkit-user-select:none;}
+.meta-header:active{opacity:.7;}
+.meta-label{font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
+.color-row{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.cdot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .12s;flex-shrink:0;position:relative;}
+.cdot.sel{border-color:#fff;transform:scale(1.15);}
+.cdot:active{transform:scale(0.92);}
+.cdot-none{background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--txt3);}
+.sector-row{display:flex;gap:6px;flex-wrap:wrap;}
+.schip{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--ln);background:var(--bg3);color:var(--txt2);cursor:pointer;transition:all .12s;white-space:nowrap;}
+.schip.sel{background:var(--lbg);border-color:rgba(212,245,76,0.4);color:var(--lim);}
+.schip:active{transform:scale(0.96);}
+.new-toggle{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--ln);background:var(--bg3);color:var(--txt3);cursor:pointer;transition:all .12s;letter-spacing:.03em;}
+.new-toggle.sel{background:rgba(212,245,76,0.15);border-color:rgba(212,245,76,0.5);color:var(--lim);}
+.new-toggle:active{transform:scale(0.96);}
+
+.save-btn{width:100%;padding:13px;border-radius:14px;background:var(--bg3);border:1px solid var(--ln2);color:var(--txt);font-size:16px;font-weight:600;cursor:pointer;transition:all .12s;letter-spacing:.02em;}
 .save-btn.ready{background:var(--lim);color:#111;border-color:transparent;font-weight:700;}
 .save-btn.ready:active{background:var(--lim2);}
 .save-btn:not(.ready):active{background:var(--bg4);}
@@ -312,9 +331,9 @@ input[type=number]::placeholder,input[type=text]::placeholder{color:var(--txt3);
 .acc-body{display:none;padding:0 16px 16px;}
 .acc-body.open{display:block;}
 .acc-divider{height:1px;background:var(--ln);margin:0 16px;}
-.rec-card{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;overflow:hidden;}
-.rec-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;-webkit-user-select:none;}
-.rec-header:active{background:var(--bg3);}
+.rec-card{background:var(--bg2);border:1px solid var(--ln);border-radius:16px;}
+.rec-header{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;-webkit-user-select:none;border-radius:16px 16px 0 0;}
+.rec-header:active{background:var(--bg3);border-radius:16px 16px 0 0;}
 .rec-header-left{display:flex;align-items:center;gap:9px;}
 .rec-icon{font-size:18px;line-height:1;flex-shrink:0;}
 .rec-title{font-size:14px;font-weight:600;}
@@ -326,10 +345,11 @@ input[type=number]::placeholder,input[type=text]::placeholder{color:var(--txt3);
 .rec-chev{font-size:13px;color:var(--txt3);}
 .rec-body{display:none;padding:0 14px 14px;flex-direction:column;gap:8px;}
 .rec-body.open{display:flex;}
-.rec-item{padding:10px 12px;border-radius:11px;background:var(--bg3);border-left:3px solid var(--blu);font-size:12px;color:var(--txt2);line-height:1.65;}
-.rec-item.warn{border-left-color:var(--amb);}
-.rec-item.good{border-left-color:var(--lim);}
-.rec-item.rest{border-left-color:var(--red);}
+.rec-item{padding:10px 12px;border-radius:11px;background:var(--bbg);border-left:3px solid var(--blu);font-size:12px;color:var(--txt2);line-height:1.65;}
+.rec-item.warn{border-left-color:var(--amb);background:var(--abg);}
+.rec-item.good{border-left-color:var(--lim);background:var(--lbg);}
+.rec-item.rest{border-left-color:var(--red);background:var(--rbg);}
+.rec-item.default{border-left-color:#484848;background:var(--bg3);color:var(--txt3);}
 .rec-item strong{color:var(--txt);font-weight:600;}
 .rec-item .rec-why{display:block;font-size:10px;color:var(--txt3);margin-top:4px;font-family:'Courier New',monospace;}
 .date-picker-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border-radius:11px;}
@@ -384,10 +404,10 @@ canvas{display:block;}
   <div class="card card-lime">
     <div class="score-wrap">
       <div class="dual-ring-wrap">
-                <div class="ring-outer">
-          <svg viewBox="0 0 148 148" width="148" height="148">
-            <circle cx="74" cy="74" r="63" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="7"/>
-            <circle id="ringArc" cx="74" cy="74" r="63" fill="none" stroke="#d4f54c" stroke-width="7" stroke-linecap="round" stroke-dasharray="396" stroke-dashoffset="396" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
+        <div class="ring-outer">
+          <svg viewBox="0 0 120 120" width="120" height="120">
+            <circle cx="60" cy="60" r="51" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="6"/>
+            <circle id="ringArc" cx="60" cy="60" r="51" fill="none" stroke="#d4f54c" stroke-width="6" stroke-linecap="round" stroke-dasharray="320" stroke-dashoffset="320" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
           </svg>
           <div class="ring-inner">
             <div class="snum dim" id="scoreNum">—</div>
@@ -396,9 +416,9 @@ canvas{display:block;}
         </div>
                 <div class="ring-divider"></div>
                 <div class="ring-outer-sm">
-          <svg viewBox="0 0 110 110" width="110" height="110">
-            <circle cx="55" cy="55" r="46" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="6"/>
-            <circle id="levelArc" cx="55" cy="55" r="46" fill="none" stroke="#d4f54c" stroke-width="6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
+          <svg viewBox="0 0 88 88" width="88" height="88">
+            <circle cx="44" cy="44" r="37" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="5"/>
+            <circle id="levelArc" cx="44" cy="44" r="37" fill="none" stroke="#d4f54c" stroke-width="5" stroke-linecap="round" stroke-dasharray="232" stroke-dashoffset="232" style="transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1),stroke .3s"/>
           </svg>
           <div class="ring-inner-sm">
             <div class="snum-sm dim" id="levelNum">—</div>
@@ -419,21 +439,7 @@ canvas{display:block;}
     <div class="session-msg" id="sessionMsg"></div>
   </div>
 
-    <div id="recCard" style="background:var(--bg2);border:1px solid var(--ln);border-radius:16px;overflow:hidden;">
-    <div onclick="toggleRec()" style="display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;">
-      <div style="display:flex;align-items:center;gap:9px;">
-        <span style="font-size:18px;line-height:1">&#127919;</span>
-        <span style="font-size:14px;font-weight:600">N&#228;chste Session</span>
-        <span id="recBadge" style="font-size:9px;padding:2px 7px;border-radius:6px;font-weight:600;background:rgba(88,168,240,0.09);color:#58a8f0">Aufbauend</span>
-      </div>
-      <span id="recChev" style="font-size:14px;color:var(--txt3)">&#8964;</span>
-    </div>
-    <div id="recBody" style="padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;">
-      <div style="padding:10px 12px;border-radius:11px;background:var(--bg3);border-left:3px solid #787878;font-size:12px;color:#787878;line-height:1.65">
-        Ab 2 gespeicherten Sessions analysiert die App deinen Verlauf und gibt dir Hinweise zu Erholung, Intensit&#228;t, Zonenbalance und Trainingsfrequenz.
-      </div>
-    </div>
-  </div>
+
 
   <div class="card">
     <div class="ctitle">Session-Dauer</div>
@@ -478,6 +484,47 @@ canvas{display:block;}
       </div>
     </div>
     <button class="add-btn" id="addBtn" onclick="addBoulder()" disabled>+ Hinzufügen</button>
+
+    <div class="meta-section">
+      <div class="meta-header" onclick="toggleMeta()">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:11px;color:var(--txt3)">🏟</span>
+          <span class="meta-label" id="metaHeaderLabel" style="margin-bottom:0;color:var(--txt2)">Boulder-Details</span>
+          <span id="metaSummary" style="font-size:10px;color:var(--txt3);font-family:'Courier New',monospace"></span>
+        </div>
+        <span id="metaChev" style="font-size:13px;color:var(--txt3)">›</span>
+      </div>
+      <div id="metaBody" style="display:none;flex-direction:column;gap:10px;padding-top:8px">
+        <div>
+          <div class="meta-label">Halle</div>
+          <div class="sector-row" id="gymRow"></div>
+          <div id="gymNote" style="font-size:10px;color:var(--amb);margin-top:5px;display:none"></div>
+        </div>
+        <div>
+          <div class="meta-label">Grifffarbe</div>
+          <div class="color-row" id="colorRow">
+            <div class="cdot cdot-none sel" data-c="" onclick="pickColor('')" title="Keine">—</div>
+            <div class="cdot" data-c="red"    onclick="pickColor('red')"    style="background:#e03030" title="Rot"></div>
+            <div class="cdot" data-c="orange" onclick="pickColor('orange')" style="background:#f07020" title="Orange"></div>
+            <div class="cdot" data-c="yellow" onclick="pickColor('yellow')" style="background:#f0c020" title="Gelb"></div>
+            <div class="cdot" data-c="green"  onclick="pickColor('green')"  style="background:#28a850" title="Grün"></div>
+            <div class="cdot" data-c="blue"   onclick="pickColor('blue')"   style="background:#2870d8" title="Blau"></div>
+            <div class="cdot" data-c="purple" onclick="pickColor('purple')" style="background:#8040c8" title="Lila"></div>
+            <div class="cdot" data-c="pink"   onclick="pickColor('pink')"   style="background:#d83090" title="Pink"></div>
+            <div class="cdot" data-c="white"  onclick="pickColor('white')"  style="background:#e0e0e0;border-color:rgba(255,255,255,0.4)" title="Weiß"></div>
+            <div class="cdot" data-c="black"  onclick="pickColor('black')"  style="background:#282828;border-color:rgba(255,255,255,0.15)" title="Schwarz"></div>
+          </div>
+        </div>
+        <div>
+          <div class="meta-label">Sektor</div>
+          <div class="sector-row" id="sectorRow"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="new-toggle" id="newToggle" onclick="toggleNew()">✦ Neu</div>
+          <span style="font-size:11px;color:var(--txt3)">Boulder aus dem aktuellen Set</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="card" id="bListCard" style="display:none">
@@ -552,6 +599,20 @@ canvas{display:block;}
   <div class="card">
     <div class="ctitle">Verlauf <span id="baselineLbl" style="color:var(--lim);font-size:10px;font-family:'Courier New',monospace"></span></div>
     <canvas id="histCanvas" height="90" style="width:100%"></canvas>
+  </div>
+
+  <div class="rec-card" id="recCard">
+    <div class="rec-header" onclick="toggleRec()">
+      <div class="rec-header-left">
+        <span class="rec-icon">🎯</span>
+        <span class="rec-title">Nächste Session</span>
+        <span class="rec-badge info" id="recBadge">Aufbauend</span>
+      </div>
+      <span class="rec-chev" id="recChev">⌄</span>
+    </div>
+    <div class="rec-body open" id="recBody">
+      <div class="rec-item default">Ab 2 gespeicherten Sessions analysiert die App deinen Verlauf und gibt dir Hinweise zu Erholung, Intensität, Zonenbalance und Trainingsfrequenz.<span class="rec-why">PRG-Framework, ACWR, Periodisierungsprinzipien</span></div>
+    </div>
   </div>
 
   <div class="slist" id="sessionList">
@@ -722,7 +783,7 @@ canvas{display:block;}
     <div class="onboard-title">Willkommen bei BPU</div>
     <div style="font-size:13px;color:#555;text-align:center;margin-top:4px;font-family:monospace;letter-spacing:.04em">Boulder Performance Unit</div>
   </div>
-  <div class="onboard-sub">Wie heisst du? Dein Name wird fuer das Profil und die Begruessung genutzt.</div>
+  <div class="onboard-sub">Wie heißt du? Dein Name wird für das Profil und die Begrüßung genutzt.</div>
   <input class="onboard-input" id="onboardInput" type="text" placeholder="Dein Name"
     maxlength="24" autocomplete="off" autocorrect="off"
     oninput="var v=this.value.trim();document.getElementById('onboardBtn').classList.toggle('ready',v.length>0)"
@@ -741,6 +802,63 @@ var F_VER={'1':1.30,low:1.00,many:0.80};
 var F_RES={top:1.00,fail:0.60};
 var VER_L={'1':'Flash · 1 Versuch',low:'Wenige · 2–5',many:'Projekt · 6–20'};
 var GCOL=['#98e0b8','#60c890','#38b070','#2898a0','#4888d8','#8060d8','#d84898','#f05050'];
+var BOULDER_COLORS={
+  red:    {label:'Rot',    hex:'#e03030'},
+  orange: {label:'Orange', hex:'#f07020'},
+  yellow: {label:'Gelb',  hex:'#f0c020'},
+  green:  {label:'Grün',  hex:'#28a850'},
+  blue:   {label:'Blau',  hex:'#2870d8'},
+  purple: {label:'Lila',  hex:'#8040c8'},
+  pink:   {label:'Pink',  hex:'#d83090'},
+  white:  {label:'Weiß',  hex:'#c8c8c8'},
+  black:  {label:'Schwarz',hex:'#484848'},
+};
+var SECTOR_LABELS={s1:'Sektor 1',s2:'Sektor 2',s3:'Sektor 3',s4:'Sektor 4',dyno:'DynoWall',trav:'Traverse',
+  eg:'EG',og:'OG',links:'Links',rechts:'Rechts',mitte:'Mitte',mixed:'Mixed Zone',
+  cave:'Cave',slab:'Slab',main:'Hauptwand',training:'Training'};
+
+var GYM_DATA={
+  'norderstedt':{
+    name:'urban apes Norderstedt',
+    short:'Norderstedt',
+    sectors:[
+      {key:'s1',label:'Sektor 1'},{key:'s2',label:'Sektor 2'},
+      {key:'s3',label:'Sektor 3'},{key:'s4',label:'Sektor 4'},
+      {key:'dyno',label:'DynoWall'},{key:'trav',label:'Traverse'},
+    ]
+  },
+  'hh-ost':{
+    name:'urban apes Hamburg Ost',
+    short:'HH Ost',
+    note:'⚠ Sektoren nicht offiziell — bitte anpassen',
+    sectors:[
+      {key:'eg',label:'EG'},{key:'og',label:'OG'},
+      {key:'mixed',label:'Mixed Zone'},{key:'cave',label:'Cave'},
+      {key:'training',label:'Training'},
+    ]
+  },
+  'hh-west':{
+    name:'urban apes Hamburg West',
+    short:'HH West',
+    note:'⚠ Sektoren nicht offiziell — bitte anpassen',
+    sectors:[
+      {key:'eg',label:'EG'},{key:'og',label:'OG'},
+      {key:'links',label:'Links'},{key:'rechts',label:'Rechts'},
+      {key:'cave',label:'Cave'},
+    ]
+  },
+  'hh-stpauli':{
+    name:'urban apes Hamburg St. Pauli',
+    short:'St. Pauli',
+    note:'⚠ Sektoren nicht offiziell — bitte anpassen',
+    sectors:[
+      {key:'eg',label:'EG'},{key:'og',label:'OG'},
+      {key:'links',label:'Links'},{key:'rechts',label:'Rechts'},
+      {key:'main',label:'Hauptwand'},
+    ]
+  },
+};
+var curGym='norderstedt';
 var AVCOL=['av0','av1','av2','av3','av4','av5'];
 var SP='bpu_profiles', SA='bpu_active';
 
@@ -798,7 +916,7 @@ var MSGS={
 };
 
 var S={id:null,name:'',gender:'m',age:30,k:0.35,n:10,dur:'mid',selfLevel:'cat',boulders:[],sessions:[]};
-var curGrade=null,curVer='low',curRes='top';
+var curGrade=null,curVer='low',curRes='top',curColor='',curSector='',curNew=false;
 
 function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -878,7 +996,6 @@ function syncUI(){
   document.getElementById('profileNameInput').value=S.name||'';
   renderSelfSkill();renderBoulders();recalc();
   updateAccSummaries();
-  renderRecommendations();
 }
 
 function updateTopbar(){
@@ -1095,7 +1212,7 @@ function recalc(){
   if(!r){
     var sn=document.getElementById('scoreNum');sn.textContent='—';sn.className='snum dim';sn.style.color='';
     document.getElementById('scoreZone').textContent='';
-    document.getElementById('ringArc').style.strokeDashoffset=396;
+    document.getElementById('ringArc').style.strokeDashoffset=320;
     document.getElementById('ringArc').style.stroke='#d4f54c';
 
     var la=document.getElementById('levelArc');
@@ -1103,14 +1220,14 @@ function recalc(){
     var ll=document.getElementById('levelLbl');
     if(la){
       var L2=getSkillLevel(),lev2=getLevel(L2),lc=lev2?lev2.color:'#d4f54c';
-      la.style.strokeDashoffset=289*(1-Math.min(L2/8,1));la.style.stroke=lc;
+      la.style.strokeDashoffset=232*(1-Math.min(L2/8,1));la.style.stroke=lc;
       if(ln){ln.textContent=L2.toFixed(1);ln.className='snum-sm';ln.style.color=lc;}
       if(ll){ll.textContent=lev2?lev2.icon+' '+lev2.title:'Level';}
     }
     document.getElementById('fRaw').textContent='—';
     document.getElementById('formulaBox').innerHTML='BPU = (S_raw / Baseline) · F_eff · F_alter · F_gesch · F_dauer · 100';
     document.getElementById('sessionMsg').classList.remove('show');
-    updateSaveBtn();renderRecommendations();drawAgeCurve();return;
+    updateSaveBtn();drawAgeCurve();return;
   }
 
   var rounded=Math.round(r.bpu),col,zone,msgKey;
@@ -1122,7 +1239,7 @@ function recalc(){
   var sn=document.getElementById('scoreNum');sn.textContent=rounded;sn.className='snum';sn.style.color=col;
   document.getElementById('scoreZone').textContent=zone;document.getElementById('scoreZone').style.color=col;
   var arc=document.getElementById('ringArc');
-  arc.style.strokeDashoffset=396*(1-Math.min(r.bpu/150,1));arc.style.stroke=col;
+  arc.style.strokeDashoffset=320*(1-Math.min(r.bpu/150,1));arc.style.stroke=col;
 
   var levelArc=document.getElementById('levelArc');
   var levelNum=document.getElementById('levelNum');
@@ -1131,7 +1248,7 @@ function recalc(){
     var lev=getLevel(L);
     var levCol=lev?lev.color:'#d4f54c';
     var levPct=Math.min(L/8,1);
-    levelArc.style.strokeDashoffset=289*(1-levPct);
+    levelArc.style.strokeDashoffset=232*(1-levPct);
     levelArc.style.stroke=levCol;
     levelNum.textContent=L.toFixed(1);
     levelNum.className='snum-sm';
@@ -1146,7 +1263,7 @@ function recalc(){
   document.getElementById('sessionMsg').innerHTML='<strong>'+zone+'</strong> — '+msg;
   document.getElementById('sessionMsg').classList.add('show');
 
-  updateSaveBtn();renderRecommendations();drawAgeCurve();
+  updateSaveBtn();drawAgeCurve();
 }
 
 function updateSaveBtn(){
@@ -1164,11 +1281,84 @@ function pickGrade(g){
 function pickVer(v){curVer=v;document.querySelectorAll('.abtn[data-v]').forEach(function(b){b.classList.toggle('active',b.dataset.v===v);});}
 function pickRes(r){curRes=r;document.querySelectorAll('.abtn[data-r]').forEach(function(b){b.classList.toggle('active',b.dataset.r===r);});}
 
+function pickColor(c){
+  curColor=c;
+  document.querySelectorAll('.cdot').forEach(function(d){d.classList.toggle('sel',d.dataset.c===c);});
+  updateMetaSummary();
+}
+function pickSector(s){
+  curSector=s;
+  document.querySelectorAll('#sectorRow .schip').forEach(function(d){d.classList.toggle('sel',d.dataset.s===s);});
+  updateMetaSummary();
+}
+function toggleNew(){
+  curNew=!curNew;
+  var t=document.getElementById('newToggle');
+  if(t)t.classList.toggle('sel',curNew);
+  updateMetaSummary();
+}
+function pickGym(key){
+  curGym=key;
+  curSector='';
+  document.querySelectorAll('#gymRow .schip').forEach(function(d){d.classList.toggle('sel',d.dataset.g===key);});
+  var gym=GYM_DATA[key];
+  var noteEl=document.getElementById('gymNote');
+  if(gym&&gym.note&&noteEl){noteEl.textContent=gym.note;noteEl.style.display='block';}
+  else if(noteEl){noteEl.style.display='none';}
+  renderSectorRow();
+  updateMetaSummary();
+}
+function renderGymRow(){
+  var row=document.getElementById('gymRow');
+  if(!row)return;
+  row.innerHTML=Object.keys(GYM_DATA).map(function(key){
+    var g=GYM_DATA[key];
+    return '<div class="schip'+(key===curGym?' sel':'')+'" data-g="'+key+'" onclick="pickGym(\''+key+'\')">'+g.short+'</div>';
+  }).join('');
+}
+function renderSectorRow(){
+  var row=document.getElementById('sectorRow');
+  if(!row)return;
+  var gym=GYM_DATA[curGym];
+  if(!gym){row.innerHTML='';return;}
+  row.innerHTML='<div class="schip sel" data-s="" onclick="pickSector(\'\')" >—</div>'
+    +gym.sectors.map(function(s){
+      return '<div class="schip'+(curSector===s.key?' sel':'')+'" data-s="'+s.key+'" onclick="pickSector(\''+s.key+'\')">'+s.label+'</div>';
+    }).join('');
+}
+function toggleMeta(){
+  var body=document.getElementById('metaBody');
+  var chev=document.getElementById('metaChev');
+  if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'flex';
+  if(chev)chev.textContent=open?'›':'⌄';
+  if(!open){renderGymRow();renderSectorRow();}
+}
+function updateMetaSummary(){
+  var parts=[];
+  var gym=GYM_DATA[curGym];
+  if(gym)parts.push(gym.short);
+  if(curColor&&BOULDER_COLORS[curColor])parts.push(BOULDER_COLORS[curColor].label);
+  if(curSector&&SECTOR_LABELS[curSector])parts.push(SECTOR_LABELS[curSector]);
+  if(curNew)parts.push('Neu');
+  var el=document.getElementById('metaSummary');
+  if(el)el.textContent=parts.length>1?parts.slice(1).join(' · '):'';
+}
+
 function addBoulder(){
-  if(!curGrade)return;S.boulders.push({g:curGrade,ver:curVer,res:curRes});
+  if(!curGrade)return;
+  var b={g:curGrade,ver:curVer,res:curRes};
+  if(curColor)b.color=curColor;
+  if(curSector)b.sector=curSector;
+  if(curNew)b.isNew=true;
+  if(curGym)b.gym=curGym;
+  S.boulders.push(b);
   renderBoulders();recalc();
   if(navigator.vibrate)navigator.vibrate(18);
   var label='Grad '+curGrade+(curVer==='1'?' · Flash':'')+(curRes==='fail'?' · Kein Top':'');
+  if(curColor&&BOULDER_COLORS[curColor])label+=' · '+BOULDER_COLORS[curColor].label;
+  if(curNew)label+=' · Neu';
   showToast(label+' — hinzugefügt!');
 }
 function removeBoulder(i){S.boulders.splice(i,1);renderBoulders();recalc();}
@@ -1182,10 +1372,20 @@ function renderBoulders(){
   var failed=S.boulders.filter(function(b){return b.res==='fail';}).length;
   document.getElementById('bCount').textContent=topped+' Tops'+(failed?' · '+failed+'✗':'');
   list.innerHTML=S.boulders.map(function(b,i){
-    var col=GCOL[b.g-1],pts=wt(b.g,b.ver,b.res),isFail=b.res==='fail',isFlash=b.ver==='1';
-    var tags='';if(isFlash)tags+='<span class="tag tag-flash">FLASH</span>';if(isFail)tags+='<span class="tag tag-fail">KEIN TOP</span>';
-    return '<div class="bitem'+(isFail?' fail-item':'')+'"><div class="bdot" style="background:'+col+'22;border:1px solid '+col+'60;color:'+col+'">'+b.g+'</div>'
-      +'<div class="binfo"><div class="bimain">Grad '+b.g+tags+'</div><div class="bisub">'+VER_L[b.ver]+(isFail?' · Kein Top':'')+'</div></div>'
+    var gradeCol=GCOL[b.g-1];
+    var dotStyle=b.color
+      ? 'background:'+BOULDER_COLORS[b.color].hex+';border:2px solid '+BOULDER_COLORS[b.color].hex+'99;color:#fff'
+      : 'background:'+gradeCol+'22;border:1px solid '+gradeCol+'60;color:'+gradeCol;
+    var pts=wt(b.g,b.ver,b.res),isFail=b.res==='fail',isFlash=b.ver==='1';
+    var tags='';
+    if(b.isNew)tags+='<span class="tag tag-new">NEU</span>';
+    if(isFlash)tags+='<span class="tag tag-flash">FLASH</span>';
+    if(isFail)tags+='<span class="tag tag-fail">KEIN TOP</span>';
+    var sub=VER_L[b.ver];
+    if(b.sector)sub+=' · '+SECTOR_LABELS[b.sector];
+    if(isFail)sub+=' · Kein Top';
+    return '<div class="bitem'+(isFail?' fail-item':'')+'"><div class="bdot" style="'+dotStyle+'">'+b.g+'</div>'
+      +'<div class="binfo"><div class="bimain">Grad '+b.g+tags+'</div><div class="bisub">'+sub+'</div></div>'
       +'<div class="bpts">'+(isFail?'±':'+')+pts.toFixed(1)+'</div>'
       +'<button class="brm" onclick="removeBoulder('+i+')">×</button></div>';
   }).join('');
@@ -1213,6 +1413,13 @@ function saveSession(){
   S.sessions.push(sess);
 
   S.sessions.sort(function(a,b){return a.dateMs-b.dateMs;});
+  S.boulders=[];curGrade=null;curColor='';curSector='';curNew=false;
+  document.querySelectorAll('.gbtn').forEach(function(b){b.classList.remove('sel');});
+  document.getElementById('selGradeLbl').textContent='—';
+  document.getElementById('addBtn').disabled=true;
+  pickColor('');pickSector('');
+  var nt=document.getElementById('newToggle');if(nt)nt.classList.remove('sel');
+  updateMetaSummary();
   persistActive();renderBoulders();recalc();
 
   initDatePicker();
@@ -1330,6 +1537,7 @@ function renderHistory(){
 
   _histPage=1;
   renderSessionPage();
+  renderRecommendations();
   drawHistCanvas();
 }
 
@@ -1423,7 +1631,7 @@ function renderSessionPage(){
     ?'<button class="load-more-btn" onclick="loadMoreSessions()">'+remaining+' ältere Sessions laden</button>'
     :'';
 
-  list.innerHTML='<div class="slist">'+items+'</div>'+loadMore;
+  list.innerHTML=items+loadMore;
 }
 
 function loadMoreSessions(){
@@ -1819,28 +2027,27 @@ function renderRecommendations(){
   if(!body) return;
   var recs=buildRecommendations();
   var COL={rest:'#f05050',warn:'#f0a832',good:'#d4f54c',info:'#58a8f0'};
-  var BG={rest:'rgba(240,80,80,0.09)',warn:'rgba(240,168,50,0.10)',good:'rgba(212,245,76,0.09)',info:'rgba(88,168,240,0.09)'};
   var LBL={rest:'Regeneration',warn:'Achtung',good:'Empfehlung',info:'Hinweis'};
   if(!recs){
-    if(badge){badge.textContent='Aufbauend';badge.style.background=BG.info;badge.style.color=COL.info;}
-    body.innerHTML='<div style="padding:10px 12px;border-radius:11px;background:var(--bg3);border-left:3px solid #484848;font-size:12px;color:#787878;line-height:1.65">Ab 2 gespeicherten Sessions analysiert die App deinen Verlauf und gibt dir Hinweise zu Erholung, Intensität, Zonenbalance und Trainingsfrequenz.<br><span style="font-size:10px;color:#484848">&#8627; PRG-Framework, ACWR, Periodisierungsprinzipien</span></div>';
+    if(badge){badge.className='rec-badge info';badge.textContent='Aufbauend';}
+    body.innerHTML='<div class="rec-item default">Ab 2 gespeicherten Sessions analysiert die App deinen Verlauf und gibt dir Hinweise zu Erholung, Intensität, Zonenbalance und Trainingsfrequenz.<span class="rec-why">PRG-Framework, ACWR, Periodisierungsprinzipien</span></div>';
     return;
   }
   var priority=['rest','warn','good','info'];
   var topType=recs.reduce(function(best,r){
     return priority.indexOf(r.type)<priority.indexOf(best)?r.type:best;
   },'info');
-  if(badge){badge.textContent=LBL[topType]||'Hinweis';badge.style.background=BG[topType];badge.style.color=COL[topType];}
+  if(badge){badge.className='rec-badge '+topType;badge.textContent=LBL[topType]||'Hinweis';}
   body.innerHTML=recs.map(function(r){
-    return '<div style="padding:10px 12px;border-radius:11px;background:'+BG[r.type]+';border-left:3px solid '+COL[r.type]+';font-size:12px;color:var(--txt2);line-height:1.65"><strong style="color:var(--txt)">'+r.icon+' '+r.title+'</strong><br>'+r.text+'<br><span style="font-size:10px;color:#787878">&#8627; '+r.why+'</span></div>';
+    return '<div class="rec-item '+r.type+'"><strong>'+r.icon+' '+r.title+'</strong><br>'+r.text+'<span class="rec-why">&#8627; '+r.why+'</span></div>';
   }).join('');
 }
 function toggleRec(){
   var body=document.getElementById('recBody');
   var chev=document.getElementById('recChev');
   if(!body)return;
-  var open=body.style.display!=='none';
-  body.style.display=open?'none':'flex';
+  var open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
   if(chev)chev.textContent=open?'›':'⌄';
 }
 
@@ -1942,6 +2149,9 @@ function init(){
   loadActive();
   initDatePicker();
   checkOnboard();
+  renderGymRow();
+  renderSectorRow();
+  updateMetaSummary();
   window.addEventListener('resize',function(){drawAgeCurve();drawHistCanvas();});
 }
 init();
